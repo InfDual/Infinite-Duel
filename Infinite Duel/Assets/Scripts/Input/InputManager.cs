@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UInput = UnityEngine.Input;
 
 namespace Duel.Input
 
 {
-    public class InputManager : MonoBehaviour
+    public class InputManager : SerializedMonoBehaviour
     {
         private string ControlFilePath
         {
@@ -24,6 +25,18 @@ namespace Duel.Input
 
         public event Action<PlayerInput> PlayerTwoInputDownEventHandler;
 
+        [SerializeField]
+        private InputBinding[] playerOneInput = new InputBinding[12];
+
+        [SerializeField]
+        private InputBinding[] playerTwoInput = new InputBinding[12];
+
+        [SerializeField]
+        private KeyCode[] playerOneDefaultBindings = new KeyCode[12];
+
+        [SerializeField]
+        private KeyCode[] playerTwoDefaultBindings = new KeyCode[12];
+
         public KeyCode KeyDown
         {
             get
@@ -40,24 +53,24 @@ namespace Duel.Input
             }
         }
 
-        [SerializeField]
-        private InputBinding[] playerOneInput = new InputBinding[12];
-
-        [SerializeField]
-        private InputBinding[] playerTwoInput = new InputBinding[12];
-
-        [SerializeField]
-        private KeyCode[] playerOneDefaultBindings = new KeyCode[12];
-
-        [SerializeField]
-        private KeyCode[] playerTwoDefaultBindings = new KeyCode[12];
-
         private void Start()
         {
+            foreach (var item in UInput.GetJoystickNames())
+            {
+                print(item);
+            }
             GetBindingsFromFile();
         }
 
         private void Update()
+        {
+            print($"C1X1 : {UInput.GetAxis("ControllerOneJoystickOneX")}");
+            print($"C1Y1 : {UInput.GetAxis("ControllerOneJoystickOneY")}");
+
+            DownInput();
+        }
+
+        private void DownInput()
         {
             for (int i = 0; i < playerOneInput.Length; i++)
             {
@@ -185,6 +198,19 @@ namespace Duel.Input
             }
 
             SaveBindingsToFile();
+        }
+
+        [Button]
+        private void ResetInputBindings()
+        {
+            for (int i = 0; i < playerOneInput.Length; i++)
+            {
+                playerOneInput[i] = new InputBinding((PlayerInput)i, playerOneDefaultBindings[i]);
+            }
+            for (int i = 0; i < playerTwoInput.Length; i++)
+            {
+                playerTwoInput[i] = new InputBinding((PlayerInput)i, playerTwoDefaultBindings[i]);
+            }
         }
     }
 

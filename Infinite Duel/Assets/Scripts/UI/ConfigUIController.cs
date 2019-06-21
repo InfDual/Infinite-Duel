@@ -6,14 +6,16 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using UInput = UnityEngine.Input;
+using Sirenix.OdinInspector;
 
 namespace Duel.UI
 {
-    public class ConfigUIController : MonoBehaviour
+    public class ConfigUIController : SerializedMonoBehaviour
     {
         [SerializeField]
         private Input.Player currentPlayerBindingSet;
 
+        [LabelText("Binding UIs")]
         [SerializeField]
         private BindingUI[] bindingUIs;
 
