@@ -1025,13 +1025,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 231966685}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 16
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 860675282}
 --- !u!1 &332550458
 GameObject:
   m_ObjectHideFlags: 0
@@ -3050,13 +3049,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 713198438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 18
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 864548708}
 --- !u!1 &718092194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3098,7 +3096,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 356f15f68c05198438c66cca763805a1, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3629,13 +3627,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 859106361}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
-  axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  actionID: 12
+  axisRange: 1
+  bindingText: {fileID: 400002189}
 --- !u!1 &859784242
 GameObject:
   m_ObjectHideFlags: 0
@@ -4086,13 +4083,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 918713720}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 19
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 846520439}
 --- !u!1 &922723950
 GameObject:
   m_ObjectHideFlags: 0
@@ -4181,13 +4177,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 922723950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 17
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 1936285277}
 --- !u!1 &935049462
 GameObject:
   m_ObjectHideFlags: 0
@@ -5461,13 +5456,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1114041216}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
-  axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  actionID: 12
+  axisRange: 2
+  bindingText: {fileID: 2037048555}
 --- !u!1 &1134572872
 GameObject:
   m_ObjectHideFlags: 0
@@ -5556,13 +5550,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1134572872}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 20
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 2045775410}
 --- !u!1 &1186729714
 GameObject:
   m_ObjectHideFlags: 0
@@ -5651,13 +5644,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1186729714}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 14
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 539681222}
 --- !u!1 &1242094525
 GameObject:
   m_ObjectHideFlags: 0
@@ -5871,6 +5863,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b886797f0825de842a55102eb3c9711a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  actionBindingUIs:
+  - {fileID: 859106364}
+  - {fileID: 1114041219}
+  - {fileID: 1835716485}
+  - {fileID: 1966370129}
+  - {fileID: 1186729717}
+  - {fileID: 1433647449}
+  - {fileID: 231966688}
+  - {fileID: 922723953}
+  - {fileID: 713198441}
+  - {fileID: 918713723}
+  - {fileID: 1134572875}
+  - {fileID: 2017185521}
   currentPlayerId: 0
   selectedControllerType: 0
   selectedControllerId: 0
@@ -6528,13 +6542,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1433647446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 15
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 2124677027}
 --- !u!1 &1449366726
 GameObject:
   m_ObjectHideFlags: 0
@@ -7116,13 +7129,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1835716482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
-  axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  actionID: 13
+  axisRange: 2
+  bindingText: {fileID: 346581421}
 --- !u!1 &1915621811
 GameObject:
   m_ObjectHideFlags: 0
@@ -7487,13 +7499,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1966370126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
-  axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  actionID: 13
+  axisRange: 1
+  bindingText: {fileID: 1801234292}
 --- !u!1 &2017185518
 GameObject:
   m_ObjectHideFlags: 0
@@ -7582,13 +7593,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2017185518}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d675421559ca846924971cf382a12b, type: 3}
+  m_Script: {fileID: 11500000, guid: 31bc63c5de5e160459f58a68cf8cd778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionID: 0
+  actionID: 21
   axisRange: 0
-  bindingText: {fileID: 0}
-  manager: {fileID: 0}
+  bindingText: {fileID: 143485012}
 --- !u!1 &2037048553
 GameObject:
   m_ObjectHideFlags: 0
