@@ -17,6 +17,9 @@ namespace Duel.UI
         private MenuScreen currentScreen;
 
         [SerializeField]
+        private Audio.AudioManager audioManager;
+
+        [SerializeField]
         [Tooltip("Title, Mode Select, Config")]
         private MenuScreenData[] screens;
 
@@ -24,20 +27,6 @@ namespace Duel.UI
         private void Start()
         {
             SwapToScreen(MenuScreen.Title);
-            Input.InputManager.Instance.PlayerOneInputDownEventHandler += OnPlayerOneInput;
-        }
-
-        private void OnPlayerOneInput(Input.PlayerInput input)
-        {
-            if (input == Input.PlayerInput.GoBack)
-            {
-                ReturnToPreviousScreen();
-            }
-        }
-
-        private void OnDestroy()
-        {
-            Input.InputManager.Instance.PlayerOneInputDownEventHandler -= OnPlayerOneInput;
         }
 
         public void ReturnToPreviousScreen()
@@ -71,7 +60,7 @@ namespace Duel.UI
         public void SwapToScreen(int screen)
         {
             currentScreen = (MenuScreen)screen;
-
+            audioManager.SwapToSong(screens[screen].themeIndex);
             for (int i = 0; i < screens.Length; i++)
             {
                 screens[i].Swap(i == screen);
@@ -85,6 +74,7 @@ public struct MenuScreenData
 {
     public GameObject screenObject;
     public UnityEngine.UI.Selectable selectionStart;
+    public int themeIndex;
 
     public void Swap(bool active)
     {
