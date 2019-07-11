@@ -24,11 +24,9 @@ namespace Duel.Audio
 
         public void SwapToSong(int songIndex)
         {
-            if (crossfadeCoroutine != null)
-            {
-                StopCoroutine(crossfadeCoroutine);
-            }
-            crossfadeCoroutine = StartCoroutine(Fade(songIndex));
+            sourceOne.Stop();
+            sourceOne.clip = themes[songIndex];
+            sourceOne.Play();
         }
 
         private IEnumerator Fade(int newSongIndex)

@@ -16,10 +16,28 @@ namespace Duel.UI
         [Rewired.PlayerIdProperty(typeof(Input.Constants.Player))]
         public int currentPlayerId;
 
-        public ControllerType selectedControllerType;
-        public int selectedControllerId;
+        private PlayerController[] playerControllerInfos = {
+            new PlayerController() { selectedControllerId = 0, selectedControllerType = ControllerType.Keyboard},
+            new PlayerController() { selectedControllerId = 0, selectedControllerType = ControllerType.Keyboard}
+        };
 
         private InputMapper inputMapper = new InputMapper();
+
+        public event Action<int> SetCurrentPlayerEventHandler;
+
+        [SerializeField]
+        private GameObject listeningPanel;
+
+        public Color selectedBindingColor;
+        public Color inactivePlayerColor;
+
+        private Coroutine controllerPolling;
+
+        public struct PlayerController
+        {
+            public ControllerType selectedControllerType;
+            public int selectedControllerId;
+        }
 
         public Player CurrentPlayer
         {
@@ -33,7 +51,14 @@ namespace Duel.UI
 
         private Controller CurrentController
         {
-            get => CurrentPlayer.controllers.GetController(selectedControllerType, selectedControllerId);
+            get => CurrentPlayer.controllers.GetController(playerControllerInfos[currentPlayerId].selectedControllerType, playerControllerInfos[currentPlayerId].selectedControllerId);
+        }
+
+        public void SetCurrentPlayer(int playerID)
+        {
+            currentPlayerId = playerID;
+            SetCurrentPlayerEventHandler?.Invoke(playerID);
+            Refresh();
         }
 
         public string GetControllerElementForAction(int actionId, AxisRange range, out int elementMapId)
@@ -63,13 +88,15 @@ namespace Duel.UI
             if (!ReInput.isReady)
                 return;
 
+            Load();
+            SetCurrentPlayer(Input.Constants.Player.Player0);
             inputMapper.options.ignoreMouseXAxis = true;
             inputMapper.options.ignoreMouseYAxis = true;
 
-            ReInput.ControllerConnectedEvent += OnControllerChanged;
-            ReInput.ControllerDisconnectedEvent += OnControllerChanged;
             inputMapper.InputMappedEvent += OnInputMapped;
             inputMapper.StoppedEvent += OnStopped;
+
+            SetCurrentController(CurrentController);
 
             Refresh();
         }
@@ -78,29 +105,24 @@ namespace Duel.UI
         {
             inputMapper.RemoveAllEventListeners();
             inputMapper.Stop();
-            ReInput.ControllerConnectedEvent -= OnControllerChanged;
-            ReInput.ControllerDisconnectedEvent -= OnControllerChanged;
         }
 
         private void OnStopped(InputMapper.StoppedEventData obj)
         {
             CurrentPlayer.controllers.maps.SetMapsEnabled(true, Input.Constants.Category.UI);
+            listeningPanel.SetActive(false);
         }
 
         private void OnInputMapped(InputMapper.InputMappedEventData obj)
         {
             Refresh();
-        }
-
-        private void OnControllerChanged(ControllerStatusChangedEventArgs obj)
-        {
-            print(obj.name);
+            ReInput.userDataStore.Save();
         }
 
         public void StartRebinding(int actionID, AxisRange axisRange, int elementMapId)
         {
             CurrentPlayer.controllers.maps.SetMapsEnabled(false, Input.Constants.Category.UI);
-
+            listeningPanel.SetActive(true);
             inputMapper.Start(
                new InputMapper.Context()
                {
@@ -118,6 +140,69 @@ namespace Duel.UI
             {
                 ui.Refresh();
             }
+        }
+
+        public void StartControllerSwap()
+        {
+            controllerPolling = StartCoroutine(PollForController());
+        }
+
+        private IEnumerator PollForController()
+        {
+            listeningPanel.SetActive(true);
+            yield return null;
+
+            var pollingInfo = ReInput.controllers.polling.PollAllControllersForFirstElementDown();
+
+            while (!pollingInfo.success)
+            {
+                yield return null;
+                pollingInfo = ReInput.controllers.polling.PollAllControllersForFirstElementDown();
+            }
+
+            SetCurrentController(pollingInfo.controller);
+            print($"{pollingInfo.controllerType} : {pollingInfo.controllerName}[{pollingInfo.controllerId}]");
+        }
+
+        private void SetCurrentController(Controller controller)
+        {
+            CurrentPlayer.controllers.maps.SetMapsEnabled(false, CurrentController.type, Input.Constants.Category.Default);
+            CurrentPlayer.controllers.ClearAllControllers();
+
+            playerControllerInfos[currentPlayerId].selectedControllerType = controller.type;
+            playerControllerInfos[currentPlayerId].selectedControllerId = controller.id;
+
+            CurrentPlayer.controllers.AddController(controller, false);
+            CurrentPlayer.controllers.maps.SetMapsEnabled(true, CurrentController.type, Input.Constants.Category.Default);
+
+            listeningPanel.SetActive(false);
+            Refresh();
+        }
+
+        public void Load()
+        {
+            ReInput.userDataStore.Load();
+
+            for (int i = 0; i < playerControllerInfos.Length; i++)
+            {
+                for (int j = 0; j < ReInput.controllers.controllerCount; j++)
+                {
+                    Controller curController = ReInput.controllers.Controllers[j];
+                    if (ReInput.controllers.IsControllerAssignedToPlayer(curController.type, curController.id, i))
+                    {
+                        ControllerType savedType = curController.type;
+                        int savedId = ReInput.players.GetPlayer(i).controllers.GetController(savedType, 0).id;
+
+                        playerControllerInfos[i] = new PlayerController()
+                        {
+                            selectedControllerType = curController.type,
+                            selectedControllerId = curController.id
+                        };
+                    }
+                }
+            }
+
+            Refresh();
         }
     }
 }

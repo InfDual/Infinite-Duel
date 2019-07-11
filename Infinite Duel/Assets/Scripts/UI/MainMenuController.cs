@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Rewired;
 using UnityEngine;
 
 namespace Duel.UI
@@ -23,14 +25,41 @@ namespace Duel.UI
         [Tooltip("Title, Mode Select, Config")]
         private MenuScreenData[] screens;
 
+        private bool returnFrame;
+
         // Start is called before the first frame update
         private void Start()
         {
-            SwapToScreen(MenuScreen.Title);
+            ReInput.players.GetPlayer(Input.Constants.Player.Player0).AddInputEventDelegate(OnReceivedInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
+            SwapToTitle();
+        }
+
+        private void OnReceivedInput(InputActionEventData obj)
+        {
+            if (obj.actionId == Input.Constants.Action.Return)
+            {
+                ReturnToPreviousScreen();
+            }
+        }
+
+        private void OnDisable()
+        {
+            //ReInput.players.GetPlayer(Input.Constants.Player.Player0).RemoveInputEventDelegate(OnReceivedInput);
+        }
+
+        private void Update()
+        {
+            if (currentScreen == MenuScreen.Title)
+            {
+                if (UnityEngine.Input.anyKeyDown && !returnFrame)
+                    SwapToScreen(MenuScreen.ModeSelect);
+            }
+            returnFrame = false;
         }
 
         public void ReturnToPreviousScreen()
         {
+            returnFrame = true;
             switch (currentScreen)
             {
                 case MenuScreen.Title:
@@ -64,6 +93,15 @@ namespace Duel.UI
             for (int i = 0; i < screens.Length; i++)
             {
                 screens[i].Swap(i == screen);
+            }
+        }
+
+        private void SwapToTitle()
+        {
+            currentScreen = MenuScreen.Title;
+            for (int i = 0; i < screens.Length; i++)
+            {
+                screens[i].Swap(i == (int)currentScreen);
             }
         }
     }
