@@ -7,30 +7,22 @@ using UnityEngine.EventSystems;
 
 namespace Duel.UI
 {
-    [RequireComponent(typeof(Selectable))]
     public class BindingUI : MonoBehaviour, ISubmitHandler, ISelectHandler, IDeselectHandler
     {
         [Rewired.ActionIdProperty(typeof(Duel.Input.Constants.Action))]
         public int actionID;
 
-        private Selectable selectable;
-
         public Rewired.AxisRange axisRange;
-
-        [SerializeField]
-        private TMPro.TextMeshProUGUI nameText;
 
         [SerializeField]
         private TMPro.TextMeshProUGUI bindingText;
 
         private int elementMapId;
 
-        private ControlConfigManager manager;
+        [Rewired.PlayerIdProperty(typeof(Duel.Input.Constants.Player))]
+        public int targetPlayer;
 
-        private void Awake()
-        {
-            selectable = GetComponent<Selectable>();
-        }
+        private ControlConfigManager manager;
 
         public void Initialize(ControlConfigManager manager)
         {
@@ -39,22 +31,24 @@ namespace Duel.UI
 
         public void OnDeselect(BaseEventData eventData)
         {
-            nameText.color = bindingText.color = Color.white;
+            bindingText.color = Color.white;
         }
 
         public void OnSelect(BaseEventData eventData)
         {
-            nameText.color = bindingText.color = selectable.colors.selectedColor;
+            bindingText.color = manager.playerColors[targetPlayer];
         }
 
         public void OnSubmit(BaseEventData eventData)
         {
-            manager.StartRebinding(actionID, axisRange, elementMapId);
+            manager.StartRebinding(targetPlayer, actionID, axisRange, elementMapId);
         }
 
         public void Refresh()
         {
-            bindingText.text = manager.GetControllerElementForAction(actionID, axisRange, out elementMapId);
+            bindingText.text = manager?.GetControllerElementForAction(targetPlayer, actionID, axisRange, out elementMapId);
+            if (string.IsNullOrEmpty(bindingText.text))
+                bindingText.text = "Unbound";
         }
     }
 }

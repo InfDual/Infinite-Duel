@@ -13,58 +13,55 @@ namespace Duel.UI
         [LabelText("Binding UIs")]
         private BindingUI[] actionBindingUIs;
 
-        [Rewired.PlayerIdProperty(typeof(Input.Constants.Player))]
-        public int currentPlayerId;
-
-        private PlayerController[] playerControllerInfos = {
-            new PlayerController() { selectedControllerId = 0, selectedControllerType = ControllerType.Keyboard},
-            new PlayerController() { selectedControllerId = 0, selectedControllerType = ControllerType.Keyboard}
-        };
+        private PlayerController[] playerControllerInfos = new PlayerController[2];
 
         private InputMapper inputMapper = new InputMapper();
 
-        public event Action<int> SetCurrentPlayerEventHandler;
-
         [SerializeField]
-        private GameObject listeningPanel;
+        private GameObject[] listeningPanels;
 
-        public Color selectedBindingColor;
-        public Color inactivePlayerColor;
+        public Color[] playerColors;
 
         private Coroutine controllerPolling;
+        private bool rebinding;
+        private static ControlConfigManager instance;
+
+        public static ControlConfigManager Singleton
+        {
+            get
+            {
+                return instance ?? (instance = FindObjectOfType<ControlConfigManager>());
+            }
+        }
 
         public struct PlayerController
         {
+            public Player player;
             public ControllerType selectedControllerType;
             public int selectedControllerId;
+
+            public ControllerMap Map
+            {
+                get => player.controllers.maps.GetMap(Controller.type, Controller.id, GetCategory(player.id), Input.Constants.Layout.Keyboard.Default);
+            }
+
+            public Controller Controller
+            {
+                get => player.controllers.GetController(selectedControllerType, selectedControllerId);
+            }
+
+            public PlayerController(int id, ControllerType selectedControllerType, int selectedControllerId)
+            {
+                player = ReInput.players.GetPlayer(id);
+                this.selectedControllerType = selectedControllerType;
+                this.selectedControllerId = selectedControllerId;
+            }
         }
 
-        public Player CurrentPlayer
-        {
-            get => ReInput.players.GetPlayer(currentPlayerId);
-        }
-
-        public ControllerMap CurrentControllerMap
-        {
-            get => CurrentPlayer.controllers.maps.GetMap(CurrentController.type, CurrentController.id, Input.Constants.Category.Default, Input.Constants.Layout.Keyboard.Default);
-        }
-
-        private Controller CurrentController
-        {
-            get => CurrentPlayer.controllers.GetController(playerControllerInfos[currentPlayerId].selectedControllerType, playerControllerInfos[currentPlayerId].selectedControllerId);
-        }
-
-        public void SetCurrentPlayer(int playerID)
-        {
-            currentPlayerId = playerID;
-            SetCurrentPlayerEventHandler?.Invoke(playerID);
-            Refresh();
-        }
-
-        public string GetControllerElementForAction(int actionId, AxisRange range, out int elementMapId)
+        public string GetControllerElementForAction(int player, int actionId, AxisRange range, out int elementMapId)
         {
             //There is an element map for each part of an action, so Axis actions have two, As Such each must be iterated through
-            foreach (var elementMap in CurrentPlayer.controllers.maps.ElementMapsWithAction(actionId, true))
+            foreach (var elementMap in playerControllerInfos[player].Map.ElementMapsWithAction(actionId, true))
             {
                 //returns the first element which matches the axis range
                 if (elementMap.ShowInField(range))
@@ -80,25 +77,46 @@ namespace Duel.UI
 
         private void OnEnable()
         {
-            foreach (BindingUI ui in actionBindingUIs)
-            {
-                ui.Initialize(this);
-            }
-
             if (!ReInput.isReady)
                 return;
 
             Load();
-            SetCurrentPlayer(Input.Constants.Player.Player0);
+
+            foreach (BindingUI ui in actionBindingUIs)
+            {
+                ui.Initialize(this);
+            }
             inputMapper.options.ignoreMouseXAxis = true;
             inputMapper.options.ignoreMouseYAxis = true;
 
             inputMapper.InputMappedEvent += OnInputMapped;
-            inputMapper.StoppedEvent += OnStopped;
+            inputMapper.ConflictFoundEvent += OnConflictFound;
+            inputMapper.CanceledEvent += OnCancelMapping;
 
-            SetCurrentController(CurrentController);
+            for (int i = 0; i < 2; i++)
+            {
+                SetCurrentController(i, playerControllerInfos[i].Controller);
+            }
 
             Refresh();
+        }
+
+        private void OnCancelMapping(InputMapper.CanceledEventData obj)
+        {
+            playerControllerInfos[obj.inputMapper.mappingContext.controllerMap.playerId].Map.enabled = true;
+        }
+
+        private void OnConflictFound(InputMapper.ConflictFoundEventData obj)
+        {
+            foreach (var item in obj.conflicts)
+            {
+                if (item.actionId == Input.Constants.Action.Accept)
+                {
+                    obj.responseCallback(InputMapper.ConflictResponse.Cancel);
+                    return;
+                }
+            }
+            obj.responseCallback(InputMapper.ConflictResponse.Replace);
         }
 
         private void OnDisable()
@@ -107,31 +125,54 @@ namespace Duel.UI
             inputMapper.Stop();
         }
 
-        private void OnStopped(InputMapper.StoppedEventData obj)
+        private void OnStopped(int playerId, Action<InputMapper.StoppedEventData> stopCallback)
         {
-            CurrentPlayer.controllers.maps.SetMapsEnabled(true, Input.Constants.Category.UI);
-            listeningPanel.SetActive(false);
+            listeningPanels[playerId].SetActive(false);
+            inputMapper.StoppedEvent -= stopCallback;
+            rebinding = false;
         }
 
         private void OnInputMapped(InputMapper.InputMappedEventData obj)
         {
+            playerControllerInfos[obj.actionElementMap.controllerMap.playerId].Map.enabled = true;
+
             Refresh();
             ReInput.userDataStore.Save();
         }
 
-        public void StartRebinding(int actionID, AxisRange axisRange, int elementMapId)
+        public static int GetCategory(int player)
         {
-            CurrentPlayer.controllers.maps.SetMapsEnabled(false, Input.Constants.Category.UI);
-            listeningPanel.SetActive(true);
+            return player == Input.Constants.Player.Player0 ? Input.Constants.Category.Default : Input.Constants.Category.Player_Two;
+        }
+
+        public void StartRebinding(int playerId, int actionID, AxisRange axisRange, int elementMapId)
+        {
+            if (rebinding)
+                return;
+            rebinding = true;
+            playerControllerInfos[playerId].Map.enabled = false;
+            listeningPanels[playerId].SetActive(true);
+
+            inputMapper.Stop();
+            Action<InputMapper.StoppedEventData> stopDelegate = null;
+            stopDelegate = (data) => OnStopped(playerId, stopDelegate);
+            inputMapper.StoppedEvent += stopDelegate;
+
+            StartCoroutine(DelayStartRebinding(playerId, actionID, axisRange, elementMapId));
+        }
+
+        private IEnumerator DelayStartRebinding(int playerId, int actionID, AxisRange axisRange, int elementMapId)
+        {
+            yield return new WaitForSeconds(.1f);
             inputMapper.Start(
-               new InputMapper.Context()
-               {
-                   actionId = actionID,
-                   controllerMap = CurrentControllerMap,
-                   actionRange = axisRange,
-                   actionElementMapToReplace = CurrentControllerMap.GetElementMap(elementMapId)
-               }
-           );
+                           new InputMapper.Context()
+                           {
+                               actionId = actionID,
+                               controllerMap = playerControllerInfos[playerId].Map,
+                               actionRange = axisRange,
+                               actionElementMapToReplace = playerControllerInfos[playerId].Map.GetElementMap(elementMapId)
+                           }
+                       );
         }
 
         private void Refresh()
@@ -142,44 +183,49 @@ namespace Duel.UI
             }
         }
 
-        public void StartControllerSwap()
+        public void StartControllerSwap(int playerId)
         {
-            controllerPolling = StartCoroutine(PollForController());
+            if (controllerPolling != null)
+            {
+                StopCoroutine(controllerPolling);
+            }
+            controllerPolling = StartCoroutine(PollForController(playerId));
         }
 
-        private IEnumerator PollForController()
+        private IEnumerator PollForController(int playerId)
         {
-            listeningPanel.SetActive(true);
+            listeningPanels[playerId].SetActive(true);
             yield return null;
 
             var pollingInfo = ReInput.controllers.polling.PollAllControllersForFirstElementDown();
 
-            while (!pollingInfo.success)
+            while (!pollingInfo.success || pollingInfo.controllerType == ControllerType.Mouse)
             {
                 yield return null;
                 pollingInfo = ReInput.controllers.polling.PollAllControllersForFirstElementDown();
             }
 
-            SetCurrentController(pollingInfo.controller);
+            SetCurrentController(playerId, pollingInfo.controller);
             print($"{pollingInfo.controllerType} : {pollingInfo.controllerName}[{pollingInfo.controllerId}]");
         }
 
-        private void SetCurrentController(Controller controller)
+        private void SetCurrentController(int playerId, Controller controller)
         {
-            CurrentPlayer.controllers.maps.SetMapsEnabled(false, CurrentController.type, Input.Constants.Category.Default);
-            CurrentPlayer.controllers.ClearAllControllers();
+            playerControllerInfos[playerId].Map.enabled = false;
 
-            playerControllerInfos[currentPlayerId].selectedControllerType = controller.type;
-            playerControllerInfos[currentPlayerId].selectedControllerId = controller.id;
+            playerControllerInfos[playerId].player.controllers.ClearAllControllers();
 
-            CurrentPlayer.controllers.AddController(controller, false);
-            CurrentPlayer.controllers.maps.SetMapsEnabled(true, CurrentController.type, Input.Constants.Category.Default);
+            playerControllerInfos[playerId].player.controllers.AddController(controller, false);
 
-            listeningPanel.SetActive(false);
+            playerControllerInfos[playerId].selectedControllerId = controller.id;
+            playerControllerInfos[playerId].selectedControllerType = controller.type;
+            playerControllerInfos[playerId].Map.enabled = true;
+
+            listeningPanels[playerId].SetActive(false);
             Refresh();
         }
 
-        public void Load()
+        public void Load(bool refresh = true)
         {
             ReInput.userDataStore.Load();
 
@@ -191,18 +237,15 @@ namespace Duel.UI
                     if (ReInput.controllers.IsControllerAssignedToPlayer(curController.type, curController.id, i))
                     {
                         ControllerType savedType = curController.type;
-                        int savedId = ReInput.players.GetPlayer(i).controllers.GetController(savedType, 0).id;
+                        int savedId = curController.id;
 
-                        playerControllerInfos[i] = new PlayerController()
-                        {
-                            selectedControllerType = curController.type,
-                            selectedControllerId = curController.id
-                        };
+                        playerControllerInfos[i] = new PlayerController(i, savedType, savedId);
+                        break;
                     }
                 }
             }
-
-            Refresh();
+            if (refresh)
+                Refresh();
         }
     }
 }

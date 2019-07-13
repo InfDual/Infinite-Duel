@@ -118,6 +118,6 @@ public struct MenuScreenData
     {
         screenObject.SetActive(active);
         if (active)
-            selectionStart.Select();
+            selectionStart?.Select();
     }
 }
