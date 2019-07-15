@@ -6,7 +6,8 @@
         Jump,
         Attack,
         GroundStateUpdate,
-        DirectionFacingUpdate
+        DirectionFacingUpdate,
+        AnimationState
     }
 
     public interface IJumpUpdateSubscriber
@@ -34,32 +35,9 @@
         void OnAttack(PlayerAttackEvent eventArgs);
     }
 
-    public static class PlayerEventExtensionMethods
+    public interface IAnimationStateEventSubscriber
     {
-        public static PlayerEventType GetSubscribedEventType(this IJumpUpdateSubscriber subscriber)
-        {
-            return PlayerEventType.Jump;
-        }
-
-        public static PlayerEventType GetSubscribedEventType(this IDirectionFacingUpdateSubscriber subscriber)
-        {
-            return PlayerEventType.DirectionFacingUpdate;
-        }
-
-        public static PlayerEventType GetSubscribedEventType(this IInputUpdateSubscriber subscriber)
-        {
-            return PlayerEventType.Input;
-        }
-
-        public static PlayerEventType GetSubscribedEventType(this IGroundStateSubscriber subscriber)
-        {
-            return PlayerEventType.GroundStateUpdate;
-        }
-
-        public static PlayerEventType GetSubscribedEventType(this IAttackSubscriber subscriber)
-        {
-            return PlayerEventType.Attack;
-        }
+        void OnAnimationStateEvent(PlayerAnimationStateEvent eventArgs);
     }
 
     public delegate void GroundStateUpdateSubscription(PlayerGroundStateUpdateEvent eventArgs);
@@ -71,4 +49,6 @@
     public delegate void AttackSubscription(PlayerAttackEvent eventArgs);
 
     public delegate void DirectionFacingUpdateSubscription(PlayerDirectionFacingUpdateEvent eventArgs);
+
+    public delegate void AnimationStateEventSubscription(PlayerAnimationStateEvent eventArgs);
 }

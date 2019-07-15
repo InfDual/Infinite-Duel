@@ -104,4 +104,23 @@ namespace Duel.PlayerSystems
             get; private set;
         }
     }
+
+    public struct PlayerAnimationStateEvent : IPlayerEvent
+    {
+        public PlayerAnimationStateEvent(PlayerAnimationStateEventType type)
+        {
+            Type = type;
+        }
+
+        public PlayerEventType EventType
+        {
+            get => PlayerEventType.AnimationState;
+        }
+
+        public PlayerAnimationStateEventType Type
+        {
+            get;
+            private set;
+        }
+    }
 }

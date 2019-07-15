@@ -25,6 +25,8 @@ namespace Duel.PlayerSystems
 
         private event DirectionFacingUpdateSubscription DirectionFacingUpdateEventHandler;
 
+        private event AnimationStateEventSubscription AnimationStateEventHandler;
+
         #endregion Subscribers
 
         private List<PlayerModule> linkedModules = new List<PlayerModule>();
@@ -61,6 +63,9 @@ namespace Duel.PlayerSystems
 
             if (module is IDirectionFacingUpdateSubscriber)
                 DirectionFacingUpdateEventHandler += ((IDirectionFacingUpdateSubscriber)module).OnDirectionFacingUpdate;
+
+            if (module is IAnimationStateEventSubscriber)
+                AnimationStateEventHandler += ((IAnimationStateEventSubscriber)module).OnAnimationStateEvent;
         }
 
         public void InvokePlayerEvent(IPlayerEvent playerEvent)
@@ -85,6 +90,10 @@ namespace Duel.PlayerSystems
 
                 case PlayerEventType.DirectionFacingUpdate:
                     DirectionFacingUpdateEventHandler?.Invoke((PlayerDirectionFacingUpdateEvent)playerEvent);
+                    break;
+
+                case PlayerEventType.AnimationState:
+                    AnimationStateEventHandler?.Invoke((PlayerAnimationStateEvent)playerEvent);
                     break;
             }
         }

@@ -41,4 +41,10 @@ namespace Duel.PlayerSystems
         Down,
         Backwards
     }
+
+    public enum PlayerAnimationStateEventType
+    {
+        AttackStart,
+        AttackEnd
+    }
 }

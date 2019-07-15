@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace Duel.PlayerSystems
 {
-    public class PlayerAnimator : PlayerModule, IJumpUpdateSubscriber, IInputUpdateSubscriber, IGroundStateSubscriber, IAttackSubscriber
+    public class PlayerAnimator : PlayerModule, IJumpUpdateSubscriber, IInputUpdateSubscriber, IGroundStateSubscriber, IAttackSubscriber, IAnimationStateEventSubscriber
     {
         [SerializeField]
         private SpriteRenderer spriteRenderer;
 
         [SerializeField]
         private Animator anim;
+
+        private bool attacking;
 
         #region Parameter Hashes
 
@@ -47,6 +49,8 @@ namespace Duel.PlayerSystems
 
         public void OnInputUpdate(PlayerInputUpdateEvent playerInput)
         {
+            if (attacking)
+                return;
             SetDirectionFacing(playerInput);
 
             anim.SetBool(movingHash, playerInput.directional.x != 0);
@@ -77,10 +81,18 @@ namespace Duel.PlayerSystems
 
         public void OnAttack(PlayerAttackEvent eventArgs)
         {
+            if (attacking)
+                return;
             anim.SetInteger(attackDirectionHash, (int)eventArgs.Direction);
             anim.SetTrigger(attackHash);
+        }
 
-            print($"{eventArgs.Type} : {eventArgs.Direction}");
+        public void OnAnimationStateEvent(PlayerAnimationStateEvent eventArgs)
+        {
+            if (eventArgs.Type == PlayerAnimationStateEventType.AttackStart)
+                attacking = true;
+            else if (eventArgs.Type == PlayerAnimationStateEventType.AttackEnd)
+                attacking = false;
         }
     }
 }
