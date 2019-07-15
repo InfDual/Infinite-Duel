@@ -98,6 +98,42 @@ TextureImporter:
   - first:
       213: -1949362066223814258
     second: Ryu_Side_Normal_4
+  - first:
+      213: -5720434395684199562
+    second: Ryu_Air_Neutral_0
+  - first:
+      213: -7524425064016856192
+    second: Ryu_Air_Neutral_1
+  - first:
+      213: 6352409482782078377
+    second: Ryu_Air_Forwards_0
+  - first:
+      213: 4422369288054676772
+    second: Ryu_Air_Forwards_1
+  - first:
+      213: -3343356458506287999
+    second: Ryu_Air_Forwards_2
+  - first:
+      213: -5800618718931223850
+    second: Ryu_Air_Backwards_0
+  - first:
+      213: 8811284700190191018
+    second: Ryu_Air_Backwards_1
+  - first:
+      213: -862734612576708639
+    second: Ryu_Air_Backwards_2
+  - first:
+      213: 6619573711275031591
+    second: Ryu_Air_Up_0
+  - first:
+      213: -1516879890498449507
+    second: Ryu_Air_Up_1
+  - first:
+      213: -2780489505276104156
+    second: Ryu_Air_Up_2
+  - first:
+      213: 7771076955455917731
+    second: Ryu_Air_Down_0
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -566,7 +602,7 @@ TextureImporter:
         width: 43
         height: 82
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -587,7 +623,7 @@ TextureImporter:
         width: 57
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -608,7 +644,7 @@ TextureImporter:
         width: 43
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -629,7 +665,7 @@ TextureImporter:
         width: 44
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -650,7 +686,7 @@ TextureImporter:
         width: 47
         height: 88
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -671,7 +707,7 @@ TextureImporter:
         width: 43
         height: 81
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -692,7 +728,7 @@ TextureImporter:
         width: 49
         height: 56
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -713,7 +749,7 @@ TextureImporter:
         width: 71
         height: 57
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -734,7 +770,7 @@ TextureImporter:
         width: 48
         height: 56
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -755,7 +791,7 @@ TextureImporter:
         width: 47
         height: 84
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -776,7 +812,7 @@ TextureImporter:
         width: 79
         height: 98
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -797,7 +833,7 @@ TextureImporter:
         width: 57
         height: 109
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -818,7 +854,7 @@ TextureImporter:
         width: 79
         height: 98
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -839,7 +875,7 @@ TextureImporter:
         width: 47
         height: 84
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -847,6 +883,258 @@ TextureImporter:
       bones: []
       spriteID: 7f3ca9e78a75bd24295b959f3be5f2da
       internalID: -1949362066223814258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Neutral_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 354
+        width: 43
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba4f6dacf460a614ba59f6e8b841a170
+      internalID: -5720434395684199562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Neutral_1
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 360
+        width: 51
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e9a966da69049b42937c416ea68fdf2
+      internalID: -7524425064016856192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Forwards_0
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 354
+        width: 33
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 12f3c81f84c239044bde5a5e0ad729a0
+      internalID: 6352409482782078377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Forwards_1
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 354
+        width: 53
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 973deb42339ecc6499721084f05e8f1e
+      internalID: 4422369288054676772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Forwards_2
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 354
+        width: 34
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc63982be9dbe824f97ea75146ee7ac1
+      internalID: -3343356458506287999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Backwards_0
+      rect:
+        serializedVersion: 2
+        x: 1119
+        y: 389
+        width: 34
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49df4e45f6f5f6a4e95d7b494472255b
+      internalID: -5800618718931223850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Backwards_1
+      rect:
+        serializedVersion: 2
+        x: 1163
+        y: 392
+        width: 55
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3a288085e8aa6243b43e0695c15e30a
+      internalID: 8811284700190191018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Backwards_2
+      rect:
+        serializedVersion: 2
+        x: 1240
+        y: 391
+        width: 33
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55926b0f43ce8174b8c45bbd0b039b88
+      internalID: -862734612576708639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Up_0
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 354
+        width: 36
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02128930e4a530449a3f54db8c10cc68
+      internalID: 6619573711275031591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Up_1
+      rect:
+        serializedVersion: 2
+        x: 822
+        y: 354
+        width: 31
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e41c2b0b54e483e4798d0e102f03191f
+      internalID: -1516879890498449507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Up_2
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 354
+        width: 28
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0650faa9a2cd1014f863bb1085fb4c0b
+      internalID: -2780489505276104156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu_Air_Down_0
+      rect:
+        serializedVersion: 2
+        x: 1292
+        y: 384
+        width: 34
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75b73e227deaaa94888d276dd9275b95
+      internalID: 7771076955455917731
       vertices: []
       indices: 
       edges: []

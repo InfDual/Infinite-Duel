@@ -14,6 +14,7 @@ namespace Duel.PlayerSystems
         private Animator anim;
 
         private bool attacking;
+        private bool grounded;
 
         #region Parameter Hashes
 
@@ -51,7 +52,8 @@ namespace Duel.PlayerSystems
         {
             if (attacking)
                 return;
-            SetDirectionFacing(playerInput);
+            if (grounded)
+                SetDirectionFacing(playerInput);
 
             anim.SetBool(movingHash, playerInput.directional.x != 0);
         }
@@ -76,7 +78,8 @@ namespace Duel.PlayerSystems
 
         public void OnGroundStateUpdate(PlayerGroundStateUpdateEvent eventArgs)
         {
-            anim.SetBool(airborneHash, !eventArgs.IsGrounded);
+            grounded = eventArgs.IsGrounded;
+            anim.SetBool(airborneHash, !grounded);
         }
 
         public void OnAttack(PlayerAttackEvent eventArgs)
