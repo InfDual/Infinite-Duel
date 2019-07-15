@@ -21,6 +21,10 @@ namespace Duel.PlayerSystems
 
         private event JumpSubscription JumpEventHandler;
 
+        private event AttackSubscription AttackEventHandler;
+
+        private event DirectionFacingUpdateSubscription DirectionFacingUpdateEventHandler;
+
         #endregion Subscribers
 
         private List<PlayerModule> linkedModules = new List<PlayerModule>();
@@ -51,6 +55,12 @@ namespace Duel.PlayerSystems
 
             if (module is IGroundStateSubscriber)
                 GroundStateUpdateEventHandler += ((IGroundStateSubscriber)module).OnGroundStateUpdate;
+
+            if (module is IAttackSubscriber)
+                AttackEventHandler += ((IAttackSubscriber)module).OnAttack;
+
+            if (module is IDirectionFacingUpdateSubscriber)
+                DirectionFacingUpdateEventHandler += ((IDirectionFacingUpdateSubscriber)module).OnDirectionFacingUpdate;
         }
 
         public void InvokePlayerEvent(IPlayerEvent playerEvent)
@@ -67,6 +77,14 @@ namespace Duel.PlayerSystems
 
                 case PlayerEventType.GroundStateUpdate:
                     GroundStateUpdateEventHandler?.Invoke((PlayerGroundStateUpdateEvent)playerEvent);
+                    break;
+
+                case PlayerEventType.Attack:
+                    AttackEventHandler?.Invoke((PlayerAttackEvent)playerEvent);
+                    break;
+
+                case PlayerEventType.DirectionFacingUpdate:
+                    DirectionFacingUpdateEventHandler?.Invoke((PlayerDirectionFacingUpdateEvent)playerEvent);
                     break;
             }
         }

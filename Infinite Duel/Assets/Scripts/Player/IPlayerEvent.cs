@@ -10,25 +10,6 @@ namespace Duel.PlayerSystems
         }
     }
 
-    public enum PlayerInputButton
-    {
-        Normal,
-        Special,
-        Throw,
-        Block,
-        Jump,
-        Pause,
-        None
-    }
-
-    public enum ButtonPhase
-    {
-        Down,
-        Pressed,
-        Up,
-        NotPressed
-    }
-
     public struct PlayerInputUpdateEvent : IPlayerEvent
     {
         public PlayerEventType EventType
@@ -63,6 +44,24 @@ namespace Duel.PlayerSystems
         }
     }
 
+    public struct PlayerDirectionFacingUpdateEvent : IPlayerEvent
+    {
+        public PlayerDirectionFacingUpdateEvent(bool facingForwards)
+        {
+            FacingForwards = facingForwards;
+        }
+
+        public PlayerEventType EventType
+        {
+            get => PlayerEventType.DirectionFacingUpdate;
+        }
+
+        public bool FacingForwards
+        {
+            get; private set;
+        }
+    }
+
     public struct PlayerGroundStateUpdateEvent : IPlayerEvent
     {
         public PlayerGroundStateUpdateEvent(bool isGrounded)
@@ -79,6 +78,30 @@ namespace Duel.PlayerSystems
         {
             get;
             private set;
+        }
+    }
+
+    public struct PlayerAttackEvent : IPlayerEvent
+    {
+        public PlayerAttackEvent(AttackType type, AttackDirection direction)
+        {
+            Type = type;
+            Direction = direction;
+        }
+
+        public PlayerEventType EventType
+        {
+            get => PlayerEventType.Attack;
+        }
+
+        public AttackType Type
+        {
+            get; private set;
+        }
+
+        public AttackDirection Direction
+        {
+            get; private set;
         }
     }
 }

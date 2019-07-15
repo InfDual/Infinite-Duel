@@ -132,7 +132,7 @@ MonoBehaviour:
       defaultAxisSensitivityType: 0
       force4WayHats: 0
       throttleCalibrationMode: 0
-      activateActionButtonsOnNegativeValue: 0
+      activateActionButtonsOnNegativeValue: 1
       deferControllerConnectedEventsOnStart: 0
       logLevel: 7
       editorSettings:

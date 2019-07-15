@@ -47,7 +47,17 @@ namespace Duel.UI
 
             public Controller Controller
             {
-                get => player.controllers.GetController(selectedControllerType, selectedControllerId);
+                get
+                {
+                    Controller controller = player.controllers.GetController(selectedControllerType, selectedControllerId);
+                    if (controller == null)
+                    {
+                        selectedControllerType = ControllerType.Keyboard;
+                        selectedControllerId = ReInput.controllers.Keyboard.id;
+                        controller = player.controllers.GetController(selectedControllerType, selectedControllerId);
+                    }
+                    return controller;
+                }
             }
 
             public PlayerController(int id, ControllerType selectedControllerType, int selectedControllerId)
@@ -60,6 +70,9 @@ namespace Duel.UI
 
         public string GetControllerElementForAction(int player, int actionId, AxisRange range, out int elementMapId)
         {
+            elementMapId = -1;
+            if (playerControllerInfos[player].player == null)
+                return "Unloaded";
             //There is an element map for each part of an action, so Axis actions have two, As Such each must be iterated through
             foreach (var elementMap in playerControllerInfos[player].Map.ElementMapsWithAction(actionId, true))
             {
@@ -71,7 +84,6 @@ namespace Duel.UI
                     return elementMap.elementIdentifierName;
                 }
             }
-            elementMapId = -1;
             return string.Empty;
         }
 
@@ -242,6 +254,10 @@ namespace Duel.UI
                         playerControllerInfos[i] = new PlayerController(i, savedType, savedId);
                         break;
                     }
+                }
+                if (playerControllerInfos[i].player == null)
+                {
+                    playerControllerInfos[i] = new PlayerController(i, ControllerType.Keyboard, ReInput.controllers.Keyboard.id);
                 }
             }
             if (refresh)

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Duel.PlayerSystems
 {
-    public class PlayerAnimator : PlayerModule, IJumpUpdateSubscriber, IInputUpdateSubscriber, IGroundStateSubscriber
+    public class PlayerAnimator : PlayerModule, IJumpUpdateSubscriber, IInputUpdateSubscriber, IGroundStateSubscriber, IAttackSubscriber
     {
         [SerializeField]
         private SpriteRenderer spriteRenderer;
@@ -45,6 +45,14 @@ namespace Duel.PlayerSystems
 
         public void OnInputUpdate(PlayerInputUpdateEvent playerInput)
         {
+            SetDirectionFacing(playerInput);
+
+            anim.SetBool(movingHash, playerInput.directional.x != 0);
+        }
+
+        private void SetDirectionFacing(PlayerInputUpdateEvent playerInput)
+        {
+            bool oldFlip = spriteRenderer.flipX;
             if (playerInput.directional.x > 0)
             {
                 spriteRenderer.flipX = false;
@@ -54,12 +62,20 @@ namespace Duel.PlayerSystems
                 spriteRenderer.flipX = true;
             }
 
-            anim.SetBool(movingHash, playerInput.directional.x != 0);
+            if (spriteRenderer.flipX != oldFlip)
+            {
+                master.InvokePlayerEvent(new PlayerDirectionFacingUpdateEvent(!spriteRenderer.flipX));
+            }
         }
 
         public void OnGroundStateUpdate(PlayerGroundStateUpdateEvent eventArgs)
         {
             anim.SetBool(airborneHash, !eventArgs.IsGrounded);
+        }
+
+        public void OnAttack(PlayerAttackEvent eventArgs)
+        {
+            print($"{eventArgs.Type} : {eventArgs.Direction}");
         }
     }
 }

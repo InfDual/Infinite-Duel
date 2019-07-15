@@ -35,9 +35,6 @@ namespace Duel.UI
             playerOne.AddInputEventDelegate(OnPlayerOneInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
             playerTwo.AddInputEventDelegate(OnPlayerTwoInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
 
-            playerOne.AddInputEventDelegate(OnPlayerOneInput, UpdateLoopType.Update, InputActionEventType.NegativeButtonJustPressed);
-            playerTwo.AddInputEventDelegate(OnPlayerTwoInput, UpdateLoopType.Update, InputActionEventType.NegativeButtonJustPressed);
-
             playerOneSelectedElement = playerOneInitialSelectable;
             playerTwoSelectedElement = playerTwoInitialSelectable;
 
@@ -49,9 +46,6 @@ namespace Duel.UI
         {
             playerOne.RemoveInputEventDelegate(OnPlayerOneInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
             playerTwo.RemoveInputEventDelegate(OnPlayerTwoInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
-
-            playerOne.RemoveInputEventDelegate(OnPlayerOneInput, UpdateLoopType.Update, InputActionEventType.NegativeButtonJustPressed);
-            playerTwo.RemoveInputEventDelegate(OnPlayerTwoInput, UpdateLoopType.Update, InputActionEventType.NegativeButtonJustPressed);
 
             if (rewiredUIManager != null)
                 rewiredUIManager.enabled = true;
