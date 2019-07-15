@@ -36,9 +36,9 @@ namespace Duel.PlayerSystems
     public enum AttackDirection
     {
         Neutral,
-        Forwards,
-        Backwards,
         Up,
-        Down
+        Forwards,
+        Down,
+        Backwards
     }
 }

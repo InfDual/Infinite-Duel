@@ -23,6 +23,7 @@ namespace Duel.PlayerSystems
         private int movingHash;
         private int inputXHash;
         private int inputYHash;
+        private int attackDirectionHash;
 
         #endregion Parameter Hashes
 
@@ -36,6 +37,7 @@ namespace Duel.PlayerSystems
             movingHash = Animator.StringToHash("Moving");
             inputXHash = Animator.StringToHash("InputX");
             inputYHash = Animator.StringToHash("InputY");
+            attackDirectionHash = Animator.StringToHash("AttackDirection");
         }
 
         public void OnJump(PlayerJumpEvent eventArgs)
@@ -75,6 +77,9 @@ namespace Duel.PlayerSystems
 
         public void OnAttack(PlayerAttackEvent eventArgs)
         {
+            anim.SetInteger(attackDirectionHash, (int)eventArgs.Direction);
+            anim.SetTrigger(attackHash);
+
             print($"{eventArgs.Type} : {eventArgs.Direction}");
         }
     }
