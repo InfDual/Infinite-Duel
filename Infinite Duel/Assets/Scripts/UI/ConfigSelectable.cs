@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 namespace Duel.UI
 {
-    [RequireComponent(typeof(TMPro.TextMeshProUGUI))]
     public class ConfigSelectable : SerializedMonoBehaviour
     {
         [SerializeField]
@@ -16,31 +15,54 @@ namespace Duel.UI
         [SerializeField]
         private TMPro.TextMeshProUGUI displayText;
 
+        [ShowIf("playerId", -2)]
+        [SerializeField]
+        private Color selectedColor;
+
+        [ShowIf("playerId", -2)]
+        [SerializeField]
+        private Color normalColor;
+
+        private bool initialized = false;
         public ConfigSelectable OnUpSelectable;
         public ConfigSelectable OnDownSelectable;
         public ConfigSelectable OnLeftSelectable;
         public ConfigSelectable OnRightSelectable;
 
-        private IDeselectHandler[] deselectHandlers;
-        private ISelectHandler[] selectHandlers;
-        private ISubmitHandler[] submitHandlers;
-        private ICancelHandler[] cancelHandlers;
+        private List<IDeselectHandler> deselectHandlers = new List<IDeselectHandler>();
+        private List<ISelectHandler> selectHandlers = new List<ISelectHandler>();
+        private List<ISubmitHandler> submitHandlers = new List<ISubmitHandler>();
+        private List<ICancelHandler> cancelHandlers = new List<ICancelHandler>();
 
         private void Awake()
         {
-            deselectHandlers = GetComponents<IDeselectHandler>();
-            selectHandlers = GetComponents<ISelectHandler>();
-            submitHandlers = GetComponents<ISubmitHandler>();
-            cancelHandlers = GetComponents<ICancelHandler>();
+            if (!initialized)
+                Initialize();
+        }
+
+        public void Initialize()
+        {
+            if (initialized)
+                return;
+            displayText = GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            deselectHandlers.AddRange(GetComponents<IDeselectHandler>());
+            selectHandlers.AddRange(GetComponents<ISelectHandler>());
+            submitHandlers.AddRange(GetComponents<ISubmitHandler>());
+            cancelHandlers.AddRange(GetComponents<ICancelHandler>());
+            initialized = true;
         }
 
         public void Deselect()
         {
             if (playerId > -1)
                 displayText.color = Color.white;
-            for (int i = 0; i < deselectHandlers.Length; i++)
+            if (playerId == -2)
             {
-                deselectHandlers[i].OnDeselect(new UnityEngine.EventSystems.BaseEventData(EventSystem.current));
+                displayText.color = normalColor;
+            }
+            for (int i = 0; i < deselectHandlers.Count; i++)
+            {
+                deselectHandlers[i].OnDeselect(new BaseEventData(EventSystem.current));
             }
         }
 
@@ -48,26 +70,29 @@ namespace Duel.UI
         {
             if (playerId > -1)
                 displayText.color = ControlConfigManager.Singleton.playerColors[playerId];
-
-            for (int i = 0; i < selectHandlers.Length; i++)
+            if (playerId == -2)
             {
-                selectHandlers[i].OnSelect(new UnityEngine.EventSystems.BaseEventData(EventSystem.current));
+                displayText.color = selectedColor;
+            }
+            for (int i = 0; i < selectHandlers.Count; i++)
+            {
+                selectHandlers[i].OnSelect(new BaseEventData(EventSystem.current));
             }
         }
 
         public void Submit()
         {
-            for (int i = 0; i < submitHandlers.Length; i++)
+            for (int i = 0; i < submitHandlers.Count; i++)
             {
-                submitHandlers[i].OnSubmit(new UnityEngine.EventSystems.BaseEventData(EventSystem.current));
+                submitHandlers[i].OnSubmit(new BaseEventData(EventSystem.current));
             }
         }
 
         public void Cancel()
         {
-            for (int i = 0; i < cancelHandlers.Length; i++)
+            for (int i = 0; i < cancelHandlers.Count; i++)
             {
-                cancelHandlers[i].OnCancel(new UnityEngine.EventSystems.BaseEventData(EventSystem.current));
+                cancelHandlers[i].OnCancel(new BaseEventData(EventSystem.current));
             }
         }
 

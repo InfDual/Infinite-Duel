@@ -27,6 +27,8 @@ namespace Duel.PlayerSystems
 
         private event AnimationStateEventSubscription AnimationStateEventHandler;
 
+        private event AnimationEventSubscription AnimationEventHandler;
+
         #endregion Subscribers
 
         private List<PlayerModule> linkedModules = new List<PlayerModule>();
@@ -66,6 +68,9 @@ namespace Duel.PlayerSystems
 
             if (module is IAnimationStateEventSubscriber)
                 AnimationStateEventHandler += ((IAnimationStateEventSubscriber)module).OnAnimationStateEvent;
+
+            if (module is IAnimationEventSubscriber)
+                AnimationEventHandler += ((IAnimationEventSubscriber)module).OnAnimationEvent;
         }
 
         public void InvokePlayerEvent(IPlayerEvent playerEvent)
@@ -94,6 +99,10 @@ namespace Duel.PlayerSystems
 
                 case PlayerEventType.AnimationState:
                     AnimationStateEventHandler?.Invoke((PlayerAnimationStateEvent)playerEvent);
+                    break;
+
+                case PlayerEventType.AnimationEvent:
+                    AnimationEventHandler?.Invoke((PlayerAnimationEvent)playerEvent);
                     break;
             }
         }

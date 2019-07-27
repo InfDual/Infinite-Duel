@@ -19,6 +19,17 @@ namespace Duel.PlayerSystems
         Right
     }
 
+    public enum PlayerEventType
+    {
+        Input,
+        Jump,
+        Attack,
+        GroundStateUpdate,
+        DirectionFacingUpdate,
+        AnimationState,
+        AnimationEvent
+    }
+
     public enum ButtonPhase
     {
         NotPressed,

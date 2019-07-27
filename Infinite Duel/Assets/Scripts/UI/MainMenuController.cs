@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Rewired;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using Actions = Duel.Input.Constants.Action;
 
 namespace Duel.UI
 {
-    public class MainMenuController : MonoBehaviour
+    public class MainMenuController : SerializedMonoBehaviour
     {
         public enum MenuScreen
         {
@@ -25,26 +27,59 @@ namespace Duel.UI
         [Tooltip("Title, Mode Select, Config")]
         private MenuScreenData[] screens;
 
-        private bool returnFrame;
-
-        // Start is called before the first frame update
-        private void Start()
+        public bool ManageInput
         {
-            ReInput.players.GetPlayer(Input.Constants.Player.Player0).AddInputEventDelegate(OnReceivedInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
-            SwapToTitle();
+            get; set;
         }
 
-        private void OnReceivedInput(InputActionEventData obj)
+        [ShowInInspector]
+        private UI.ConfigSelectable currentlySelectedObj;
+
+        private bool returnFrame;
+
+        private Player playerOne;
+
+        // Start is called before the first frame update
+        private void OnEnable()
         {
-            if (obj.actionId == Input.Constants.Action.Return)
-            {
-                ReturnToPreviousScreen();
-            }
+            ManageInput = true;
+            playerOne = ReInput.players.GetPlayer(Input.Constants.Player.Player0);
+            playerOne.AddInputEventDelegate(OnReceivedInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
+            SwapToTitle();
         }
 
         private void OnDisable()
         {
-            //ReInput.players.GetPlayer(Input.Constants.Player.Player0).RemoveInputEventDelegate(OnReceivedInput);
+            playerOne?.RemoveInputEventDelegate(OnReceivedInput);
+        }
+
+        private void OnReceivedInput(InputActionEventData obj)
+        {
+            if (obj.actionId == Actions.Return)
+            {
+                ReturnToPreviousScreen();
+            }
+            if (!ManageInput)
+                return;
+
+            if (obj.actionId == Actions.Vertical)
+            {
+                currentlySelectedObj?.Deselect();
+
+                if (currentlySelectedObj != null)
+                {
+                    if (obj.GetAxis() > 0)
+                        currentlySelectedObj = currentlySelectedObj.OnUpSelectable ?? currentlySelectedObj;
+                    else if (obj.GetAxis() < 0)
+                        currentlySelectedObj = currentlySelectedObj.OnDownSelectable ?? currentlySelectedObj;
+                }
+
+                currentlySelectedObj?.Select();
+            }
+            else if (obj.actionId == Actions.Accept)
+            {
+                currentlySelectedObj?.Submit();
+            }
         }
 
         private void Update()
@@ -81,9 +116,7 @@ namespace Duel.UI
 
         public void SwapToScreen(MenuScreen screen)
         {
-            currentScreen = screen;
-
-            SwapToScreen((int)currentScreen);
+            SwapToScreen((int)screen);
         }
 
         public void SwapToScreen(int screen)
@@ -94,6 +127,9 @@ namespace Duel.UI
             {
                 screens[i].Swap(i == screen);
             }
+            currentlySelectedObj?.Deselect();
+            currentlySelectedObj = screens[screen].initialSelectable;
+            currentlySelectedObj?.Select();
         }
 
         private void SwapToTitle()
@@ -103,6 +139,9 @@ namespace Duel.UI
             {
                 screens[i].Swap(i == (int)currentScreen);
             }
+            currentlySelectedObj?.Deselect();
+            currentlySelectedObj = screens[(int)MenuScreen.Title].initialSelectable;
+            currentlySelectedObj?.Select();
         }
     }
 }
@@ -111,13 +150,11 @@ namespace Duel.UI
 public struct MenuScreenData
 {
     public GameObject screenObject;
-    public UnityEngine.UI.Selectable selectionStart;
     public int themeIndex;
+    public Duel.UI.ConfigSelectable initialSelectable;
 
     public void Swap(bool active)
     {
         screenObject.SetActive(active);
-        if (active)
-            selectionStart?.Select();
     }
 }

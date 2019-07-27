@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35425df09396ca74caefb0ead1b1f342, type: 3}
+  m_Name: Ryu
+  m_EditorClassIdentifier: 
+  groundAttacks:
+  - attackAnimation: {fileID: 7400000, guid: d5fb3df0afdbac841afdeff86c8c5136, type: 2}
+    direction: 0
+    keyFrames: []
+  - attackAnimation: {fileID: 7400000, guid: 7ed600a7768f83d478c70f82915b8694, type: 2}
+    direction: 1
+    keyFrames: []
+  - attackAnimation: {fileID: 7400000, guid: ed18f53167b585041b8cc2504cc97bed, type: 2}
+    direction: 2
+    keyFrames:
+    - hitBoxes:
+      - position: {x: 3.1707811, y: -0.45296893}
+        size: {x: 1, y: 1}
+        rotation: 0
+        damage: 0
+        knockbackDirection: {x: 0, y: 0}
+        knockbackForce: 0
+      hurtBoxes: []
+    - hitBoxes:
+      - position: {x: 3.0795584, y: 0.0054724365}
+        size: {x: 1, y: 1}
+        rotation: 0
+        damage: 0
+        knockbackDirection: {x: 0, y: 0}
+        knockbackForce: 0
+      hurtBoxes: []
+  - attackAnimation: {fileID: 7400000, guid: ffda1c20f9c0f48499e89286439952c4, type: 2}
+    direction: 3
+    keyFrames: []
+  airAttacks: []
+  specialAttacks: []

@@ -36,7 +36,7 @@ namespace Duel.UI
 
         public void OnSelect(BaseEventData eventData)
         {
-            bindingText.color = manager.playerColors[targetPlayer];
+            bindingText.color = ControlConfigManager.Singleton.playerColors[targetPlayer];
         }
 
         public void OnSubmit(BaseEventData eventData)

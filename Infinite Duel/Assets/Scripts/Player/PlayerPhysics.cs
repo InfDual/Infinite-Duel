@@ -46,6 +46,8 @@ namespace Duel.PlayerSystems
 
         public void OnInputUpdate(PlayerInputUpdateEvent playerEvent)
         {
+            if (rb2d == null)
+                return;
             if (!attacking)
                 rb2d.velocity = new Vector2(moveSpeed * playerEvent.directional.x, rb2d.velocity.y);
             if (playerEvent.button == PlayerInputButton.Jump)

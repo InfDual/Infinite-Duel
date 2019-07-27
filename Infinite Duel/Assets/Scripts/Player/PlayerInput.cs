@@ -55,6 +55,12 @@ namespace Duel.PlayerSystems
             bufferCoroutine = StartCoroutine(UpdateBuffer());
         }
 
+        private void OnDisable()
+        {
+            input?.RemoveInputEventDelegate(OnInputDown);
+            input?.RemoveInputEventDelegate(OnAxisUpdate);
+        }
+
         private void OnAxisUpdate(InputActionEventData obj)
         {
             PlayerInputUpdateEvent inputUpdateEvent = new PlayerInputUpdateEvent(PlayerInputButton.None, ButtonPhase.NotPressed, input);

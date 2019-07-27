@@ -52,8 +52,7 @@ namespace Duel.PlayerSystems
         {
             if (attacking)
                 return;
-            if (grounded)
-                SetDirectionFacing(playerInput);
+            SetDirectionFacing(playerInput);
 
             anim.SetBool(movingHash, playerInput.directional.x != 0);
         }

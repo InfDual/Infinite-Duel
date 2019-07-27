@@ -123,4 +123,12 @@ namespace Duel.PlayerSystems
             private set;
         }
     }
+
+    public struct PlayerAnimationEvent : IPlayerEvent
+    {
+        public PlayerEventType EventType
+        {
+            get => PlayerEventType.AnimationEvent;
+        }
+    }
 }

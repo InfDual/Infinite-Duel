@@ -23,11 +23,12 @@ namespace Duel.UI
         private ConfigSelectable playerTwoInitialSelectable;
 
         [SerializeField]
-        private MonoBehaviour rewiredUIManager;
+        private MainMenuController uiManager;
 
         private void OnEnable()
         {
-            rewiredUIManager.enabled = false;
+            if (uiManager != null)
+                uiManager.ManageInput = false;
 
             playerOne = ReInput.players.GetPlayer(Input.Constants.Player.Player0);
             playerTwo = ReInput.players.GetPlayer(Input.Constants.Player.Player1);
@@ -38,17 +39,23 @@ namespace Duel.UI
             playerOneSelectedElement = playerOneInitialSelectable;
             playerTwoSelectedElement = playerTwoInitialSelectable;
 
+            playerOneSelectedElement.Initialize();
+            playerTwoSelectedElement.Initialize();
+
             playerOneSelectedElement.Select();
             playerTwoSelectedElement.Select();
         }
 
         private void OnDisable()
         {
+            playerOneSelectedElement?.Deselect();
+            playerTwoSelectedElement?.Deselect();
+
             playerOne.RemoveInputEventDelegate(OnPlayerOneInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
             playerTwo.RemoveInputEventDelegate(OnPlayerTwoInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
 
-            if (rewiredUIManager != null)
-                rewiredUIManager.enabled = true;
+            if (uiManager != null)
+                uiManager.ManageInput = true;
         }
 
         private void OnPlayerOneInput(InputActionEventData obj)

@@ -1,15 +1,5 @@
 ﻿namespace Duel.PlayerSystems
 {
-    public enum PlayerEventType
-    {
-        Input,
-        Jump,
-        Attack,
-        GroundStateUpdate,
-        DirectionFacingUpdate,
-        AnimationState
-    }
-
     public interface IJumpUpdateSubscriber
     {
         void OnJump(PlayerJumpEvent eventArgs);
@@ -40,6 +30,11 @@
         void OnAnimationStateEvent(PlayerAnimationStateEvent eventArgs);
     }
 
+    public interface IAnimationEventSubscriber
+    {
+        void OnAnimationEvent(PlayerAnimationEvent eventArgs);
+    }
+
     public delegate void GroundStateUpdateSubscription(PlayerGroundStateUpdateEvent eventArgs);
 
     public delegate void JumpSubscription(PlayerJumpEvent eventArgs);
@@ -51,4 +46,6 @@
     public delegate void DirectionFacingUpdateSubscription(PlayerDirectionFacingUpdateEvent eventArgs);
 
     public delegate void AnimationStateEventSubscription(PlayerAnimationStateEvent eventArgs);
+
+    public delegate void AnimationEventSubscription(PlayerAnimationEvent eventArgs);
 }
