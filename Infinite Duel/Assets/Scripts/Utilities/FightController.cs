@@ -27,12 +27,24 @@ namespace Duel
 
         private Player[] players = new Player[2];
 
+        private int pausingPlayer;
+
         private void OnEnable()
         {
             for (int i = 0; i < 2; i++)
             {
                 players[i] = ReInput.players.GetPlayer(i);
                 players[i].AddInputEventDelegate(OnInput, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed);
+                players[i].AddInputEventDelegate(OnPause, UpdateLoopType.Update, InputActionEventType.ButtonJustPressedForTime, Actions.Pause, new object[] { 2f });
+            }
+        }
+
+        private void OnPause(InputActionEventData obj)
+        {
+            if (obj.actionId == Actions.Pause)
+            {
+                pausingPlayer = obj.playerId;
+                TogglePause();
             }
         }
 
@@ -41,16 +53,12 @@ namespace Duel
             for (int i = 0; i < 2; i++)
             {
                 players[i]?.RemoveInputEventDelegate(OnInput);
+                players[i]?.RemoveInputEventDelegate(OnPause);
             }
         }
 
         private void OnInput(InputActionEventData obj)
         {
-            if (obj.actionId == Actions.Pause)
-            {
-                TogglePause(obj.playerId);
-            }
-
             if (!paused)
                 return;
 
@@ -70,14 +78,14 @@ namespace Duel
             }
         }
 
-        public void TogglePause(int playerId)
+        public void TogglePause()
         {
             paused = !paused;
             Time.timeScale = paused ? 0 : 1;
             pauseMenu.SetActive(paused);
             if (paused)
             {
-                playerPauseText.text = playerId == 0 ? "Player One Paused" : "Player Two Paused";
+                playerPauseText.text = pausingPlayer == 0 ? "Player One Paused" : "Player Two Paused";
                 currentlySelectedObj?.Deselect();
                 currentlySelectedObj = initialSelectable;
                 currentlySelectedObj.Select();

@@ -1132,7 +1132,7 @@ MonoBehaviour:
     playerIdCounter: 3
     actionIdCounter: 26
     actionCategoryIdCounter: 5
-    inputBehaviorIdCounter: 1
+    inputBehaviorIdCounter: 2
     mapCategoryIdCounter: 3
     joystickLayoutIdCounter: 1
     keyboardLayoutIdCounter: 1
