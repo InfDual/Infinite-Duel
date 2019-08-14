@@ -12,34 +12,523 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35425df09396ca74caefb0ead1b1f342, type: 3}
   m_Name: Ryu
   m_EditorClassIdentifier: 
-  groundAttacks:
-  - attackAnimation: {fileID: 7400000, guid: d5fb3df0afdbac841afdeff86c8c5136, type: 2}
-    direction: 0
-    keyFrames: []
-  - attackAnimation: {fileID: 7400000, guid: 7ed600a7768f83d478c70f82915b8694, type: 2}
-    direction: 1
-    keyFrames: []
-  - attackAnimation: {fileID: 7400000, guid: ed18f53167b585041b8cc2504cc97bed, type: 2}
-    direction: 2
-    keyFrames:
-    - hitBoxes:
-      - position: {x: 3.1707811, y: -0.45296893}
-        size: {x: 1, y: 1}
-        rotation: 0
-        damage: 0
-        knockbackDirection: {x: 0, y: 0}
-        knockbackForce: 0
-      hurtBoxes: []
-    - hitBoxes:
-      - position: {x: 3.0795584, y: 0.0054724365}
-        size: {x: 1, y: 1}
-        rotation: 0
-        damage: 0
-        knockbackDirection: {x: 0, y: 0}
-        knockbackForce: 0
-      hurtBoxes: []
-  - attackAnimation: {fileID: 7400000, guid: ffda1c20f9c0f48499e89286439952c4, type: 2}
-    direction: 3
-    keyFrames: []
-  airAttacks: []
-  specialAttacks: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 7400000, guid: 1eaa753a86cd3ab47b0c518d06456a06, type: 2}
+    - {fileID: 7400000, guid: ecd3b21e8ec6d5f44ac2bdd24dd8d429, type: 2}
+    - {fileID: 7400000, guid: 30272c51e0e2b6f4bb0cd6f343ab4f07, type: 2}
+    - {fileID: 7400000, guid: d1389aa9540cb2f4fb30418bf5e7dd53, type: 2}
+    - {fileID: 7400000, guid: b04c753fcd7ce3740a2c6bcbdc00d7ea, type: 2}
+    - {fileID: 7400000, guid: d5fb3df0afdbac841afdeff86c8c5136, type: 2}
+    - {fileID: 7400000, guid: ed18f53167b585041b8cc2504cc97bed, type: 2}
+    - {fileID: 7400000, guid: 7ed600a7768f83d478c70f82915b8694, type: 2}
+    - {fileID: 7400000, guid: ffda1c20f9c0f48499e89286439952c4, type: 2}
+    - {fileID: 7400000, guid: 301120e93941e1e4b9022a76c06e738d, type: 2}
+    - {fileID: 7400000, guid: 4f3350889eda1034db997ae469ca1412, type: 2}
+    - {fileID: 7400000, guid: c8aa8c27b1610c349ad02395ba22f4e6, type: 2}
+    - {fileID: 7400000, guid: 7b523b6bbfd178a4da0df3941236f517, type: 2}
+    - {fileID: 7400000, guid: c1ae770b6f50e7140b0e690cb59ff170, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: animations
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Duel.Combat.AnimationInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 15
+    - Name: 
+      Entry: 7
+      Data: 1|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 0
+    - Name: frameData
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 3|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 5|Duel.Combat.HitboxInfo, Assembly-CSharp
+    - Name: position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1.92040443
+    - Name: 
+      Entry: 4
+      Data: 0.29719758
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: rotation
+      Entry: 4
+      Data: 0
+    - Name: damage
+      Entry: 4
+      Data: 0
+    - Name: hitStun
+      Entry: 4
+      Data: 0
+    - Name: knockbackDirection
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: knockbackForce
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 1
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 7|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 0
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 9|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 0
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 10|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 11|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 0
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 12|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 1
+    - Name: frameData
+      Entry: 7
+      Data: 13|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 14|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 2
+    - Name: frameData
+      Entry: 7
+      Data: 15|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 16|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 3
+    - Name: frameData
+      Entry: 7
+      Data: 17|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 18|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 4
+    - Name: frameData
+      Entry: 7
+      Data: 19|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 20|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 5
+    - Name: frameData
+      Entry: 7
+      Data: 21|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 22|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 6
+    - Name: frameData
+      Entry: 7
+      Data: 23|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 24|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 6
+    - Name: frameData
+      Entry: 7
+      Data: 25|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 26|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 7
+    - Name: frameData
+      Entry: 7
+      Data: 27|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 28|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 8
+    - Name: frameData
+      Entry: 7
+      Data: 29|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 30|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 9
+    - Name: frameData
+      Entry: 7
+      Data: 31|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 32|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 10
+    - Name: frameData
+      Entry: 7
+      Data: 33|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 34|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 11
+    - Name: frameData
+      Entry: 7
+      Data: 35|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 36|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 12
+    - Name: frameData
+      Entry: 7
+      Data: 37|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 38|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 13
+    - Name: frameData
+      Entry: 7
+      Data: 39|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

@@ -21,6 +21,23 @@ namespace Duel
             }
             return newText.ToString();
         }
+
+        public static byte GetByte(ref byte[] bytes, int index)
+        {
+            byte value = bytes[index];
+            Debug.Log(value);
+            return value;
+        }
+
+        public static byte GetByte(int value, int index)
+        {
+            return System.BitConverter.GetBytes(value)[index];
+        }
     }
 
+    public static class Layers
+    {
+        public static readonly int hitbox = LayerMask.NameToLayer("Hitbox");
+        public static readonly int hurtbox = LayerMask.NameToLayer("Hurtbox");
+    }
 }

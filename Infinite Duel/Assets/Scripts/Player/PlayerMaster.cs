@@ -29,6 +29,9 @@ namespace Duel.PlayerSystems
 
         private event AnimationEventSubscription AnimationEventHandler;
 
+        //Refers to event which occurs when a hitbox enters this player's hurtbox
+        private event HitSubscription HitEventHandler;
+
         #endregion Subscribers
 
         private List<PlayerModule> linkedModules = new List<PlayerModule>();
@@ -51,26 +54,29 @@ namespace Duel.PlayerSystems
 
         private void SubscribeModuleToEvents(PlayerModule module)
         {
-            if (module is IJumpUpdateSubscriber)
-                JumpEventHandler += ((IJumpUpdateSubscriber)module).OnJump;
+            if (module is IJumpUpdateSubscriber jumpUpdateSubscriber)
+                JumpEventHandler += jumpUpdateSubscriber.OnJump;
 
-            if (module is IInputUpdateSubscriber)
-                InputUpdateEventHandler += ((IInputUpdateSubscriber)module).OnInputUpdate;
+            if (module is IInputUpdateSubscriber inputUpdateSubscriber)
+                InputUpdateEventHandler += inputUpdateSubscriber.OnInputUpdate;
 
-            if (module is IGroundStateSubscriber)
-                GroundStateUpdateEventHandler += ((IGroundStateSubscriber)module).OnGroundStateUpdate;
+            if (module is IGroundStateSubscriber groundStateSubscriber)
+                GroundStateUpdateEventHandler += groundStateSubscriber.OnGroundStateUpdate;
 
-            if (module is IAttackSubscriber)
-                AttackEventHandler += ((IAttackSubscriber)module).OnAttack;
+            if (module is IAttackSubscriber attackSubscriber)
+                AttackEventHandler += attackSubscriber.OnAttack;
 
-            if (module is IDirectionFacingUpdateSubscriber)
-                DirectionFacingUpdateEventHandler += ((IDirectionFacingUpdateSubscriber)module).OnDirectionFacingUpdate;
+            if (module is IDirectionFacingUpdateSubscriber directionFacingUpdateSubscriber)
+                DirectionFacingUpdateEventHandler += directionFacingUpdateSubscriber.OnDirectionFacingUpdate;
 
-            if (module is IAnimationStateEventSubscriber)
-                AnimationStateEventHandler += ((IAnimationStateEventSubscriber)module).OnAnimationStateEvent;
+            if (module is IAnimationStateEventSubscriber animationStateEventSubscriber)
+                AnimationStateEventHandler += animationStateEventSubscriber.OnAnimationStateEvent;
 
-            if (module is IAnimationEventSubscriber)
-                AnimationEventHandler += ((IAnimationEventSubscriber)module).OnAnimationEvent;
+            if (module is IAnimationEventSubscriber animationEventSubscriber)
+                AnimationEventHandler += animationEventSubscriber.OnAnimationEvent;
+
+            if (module is IHitSubscriber hitSubscriber)
+                HitEventHandler += hitSubscriber.OnHit;
         }
 
         public void InvokePlayerEvent(IPlayerEvent playerEvent)
@@ -103,6 +109,10 @@ namespace Duel.PlayerSystems
 
                 case PlayerEventType.AnimationEvent:
                     AnimationEventHandler?.Invoke((PlayerAnimationEvent)playerEvent);
+                    break;
+
+                case PlayerEventType.Hit:
+                    HitEventHandler?.Invoke((PlayerHitEvent)playerEvent);
                     break;
             }
         }

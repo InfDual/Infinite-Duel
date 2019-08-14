@@ -5,9 +5,9 @@ using Duel.Combat;
 
 namespace Duel.PlayerSystems
 {
-    public class PlayerCombat : PlayerModule
+    public class PlayerCombat : PlayerModule, IAnimationEventSubscriber
     {
-        public CharacterAttackRegistryObject attackRegistryObject;
+        public CharacterAnimationRegistryObject animationRegistryObject;
 
         [SerializeField]
         private Transform colliderContainer;
@@ -18,35 +18,44 @@ namespace Duel.PlayerSystems
         [SerializeField]
         private List<BoxCollider2D> collisionBoxes = new List<BoxCollider2D>();
 
+        public void OnAnimationEvent(PlayerAnimationEvent eventArgs)
+        {
+            if (eventArgs.Type == PlayerAnimationEventType.AttackKeyFrame)
+            {
+                int attackIndex = Utilities.GetByte(ref eventArgs.intBytes, 1);
+                int frameIndex = Utilities.GetByte(ref eventArgs.intBytes, 2);
+                UpdateCollisionBoxes(animationRegistryObject[attackIndex].frameData[frameIndex]);
+            }
+        }
+
         public void UpdateCollisionBoxes(FrameData frameData)
         {
-            int hurtboxCount = frameData.hurtBoxes.Count;
-            int hitboxCount = frameData.hitBoxes.Count;
-            if (collisionBoxes.Count < hurtboxCount + hitboxCount)
+            while (collisionBoxes.Count < frameData.BoxCount)
             {
-                int difference = (hurtboxCount + hitboxCount) - collisionBoxes.Count;
-                for (int i = 0; i < difference; i++)
-                {
-                    GameObject newColl = new GameObject("Collision Box", typeof(BoxCollider2D));
-                    newColl.transform.parent = colliderContainer;
-                    collisionBoxes.Add(newColl.GetComponent<BoxCollider2D>());
-                }
+                GameObject newColl = new GameObject("Collision Box", typeof(BoxCollider2D));
+                newColl.transform.parent = colliderContainer;
+                newColl.layer = Layers.hitbox;
+                collisionBoxes.Add(newColl.GetComponent<BoxCollider2D>());
             }
 
             int lastIndex = 0;
-            for (int i = 0; i < hurtboxCount; i++)
+            for (int i = 0; i < frameData.BoxCount; i++, lastIndex++)
             {
-                lastIndex = i;
-                collisionBoxes[i].offset = frameData.hurtBoxes[i].position;
-                collisionBoxes[i].size = frameData.hurtBoxes[i].size;
-                collisionBoxes[i].transform.localEulerAngles = Vector3.forward * frameData.hurtBoxes[i].rotation;
+                collisionBoxes[i].enabled = true;
+                collisionBoxes[i].gameObject.layer = frameData[i].Type == 0 ? Layers.hitbox : Layers.hurtbox;
+                collisionBoxes[i].transform.localPosition = frameData[i].position;
+                collisionBoxes[i].transform.localScale = frameData[i].size;
+                collisionBoxes[i].transform.localEulerAngles = Vector3.forward * frameData[i].rotation;
             }
-            for (int i = 0; i < hitboxCount; i++)
+            for (int i = lastIndex; i < collisionBoxes.Count; i++)
             {
-                collisionBoxes[lastIndex + i].transform.localPosition = frameData.hitBoxes[i].position;
-                collisionBoxes[lastIndex + i].transform.localScale = ((Vector3)frameData.hitBoxes[i].size) + Vector3.forward;
-                collisionBoxes[lastIndex + i].transform.localEulerAngles = Vector3.forward * frameData.hitBoxes[i].rotation;
+                collisionBoxes[i].enabled = false;
             }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            print(collision.gameObject.name);
         }
     }
 }

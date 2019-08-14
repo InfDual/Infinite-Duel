@@ -27,7 +27,8 @@ namespace Duel.PlayerSystems
         GroundStateUpdate,
         DirectionFacingUpdate,
         AnimationState,
-        AnimationEvent
+        AnimationEvent,
+        Hit
     }
 
     public enum ButtonPhase
@@ -57,5 +58,10 @@ namespace Duel.PlayerSystems
     {
         AttackStart,
         AttackEnd
+    }
+
+    public enum PlayerAnimationEventType
+    {
+        AttackKeyFrame
     }
 }

@@ -105,6 +105,23 @@ namespace Duel.PlayerSystems
         }
     }
 
+    public struct PlayerHitEvent : IPlayerEvent
+    {
+        public PlayerHitEvent(Combat.HitboxInfo damagingHitbox, Combat.HurtboxInfo damagedHurtbox)
+        {
+            hitboxInfo = damagingHitbox;
+            hurtboxInfo = damagedHurtbox;
+        }
+
+        public PlayerEventType EventType
+        {
+            get => PlayerEventType.Hit;
+        }
+
+        public Combat.HitboxInfo hitboxInfo;
+        public Combat.HurtboxInfo hurtboxInfo;
+    }
+
     public struct PlayerAnimationStateEvent : IPlayerEvent
     {
         public PlayerAnimationStateEvent(PlayerAnimationStateEventType type)
@@ -126,9 +143,31 @@ namespace Duel.PlayerSystems
 
     public struct PlayerAnimationEvent : IPlayerEvent
     {
+        public PlayerAnimationEvent(PlayerAnimationEventType type, AnimationEvent animationEvent)
+        {
+            Type = type;
+
+            this.stringParameter = animationEvent.stringParameter;
+            this.floatParameter = animationEvent.floatParameter;
+            this.intParameter = animationEvent.intParameter;
+
+            intBytes = System.BitConverter.GetBytes(intParameter);
+        }
+
         public PlayerEventType EventType
         {
             get => PlayerEventType.AnimationEvent;
         }
+
+        public PlayerAnimationEventType Type
+        {
+            get;
+            private set;
+        }
+
+        public string stringParameter;
+        public float floatParameter;
+        public int intParameter;
+        public byte[] intBytes;
     }
 }

@@ -87,6 +87,7 @@ namespace Duel.PlayerSystems
                 return;
             anim.SetInteger(attackDirectionHash, (int)eventArgs.Direction);
             anim.SetTrigger(attackHash);
+            anim.SetBool(movingHash, false);
         }
 
         public void OnAnimationStateEvent(PlayerAnimationStateEvent eventArgs)
@@ -95,6 +96,12 @@ namespace Duel.PlayerSystems
                 attacking = true;
             else if (eventArgs.Type == PlayerAnimationStateEventType.AttackEnd)
                 attacking = false;
+        }
+
+        public void InvokeAnimationEvent(AnimationEvent animationEvent)
+        {
+            PlayerAnimationEventType type = (PlayerAnimationEventType)Utilities.GetByte(animationEvent.intParameter, 0);
+            master.InvokePlayerEvent(new PlayerAnimationEvent(type, animationEvent));
         }
     }
 }

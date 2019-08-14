@@ -7,170 +7,239 @@ using Sirenix.Serialization;
 using Duel.Combat;
 using Sirenix.OdinInspector.Editor;
 using System;
+using System.Collections.Generic;
 
 namespace Duel.Editor
 {
     [EditorTool("Frame Data Tool", typeof(PlayerSystems.PlayerCombat))]
     public class FrameDataTool : EditorTool
     {
+        public enum ToolMode
+        {
+            Select,
+            Add,
+            Remove,
+            Position,
+            Rotation,
+            Scale,
+            Vector
+        }
+
+        #region Toolbar UI Variables
+
         [SerializeField]
         private Texture2D m_ToolIcon;
 
+        private SceneView sceneView;
         private GUIContent m_IconContent;
-        private SerializedProperty attacks;
-        private PlayerCombat targetedObject;
-
-        private Color hurtboxColor = Color.green;
-        private Color hitboxColor = Color.red;
-        private Color superArmorColor = Color.cyan;
-
-        private float sampleTime;
-
-        private string[] attackNames = new string[0];
-
-        private int selectedAttackIndex;
-        private BoxInfo selectedBox;
-        private bool isHitboxSelected;
-        private int boxIndex;
-        private Vector2 positionInBox;
-
-        private Vector3 mousePosition;
-
-        private CharacterAttackRegistryObject TargetRegistry
-        {
-            get => targetedObject?.attackRegistryObject;
-        }
-
-        private AttackInfo SelectedAttack
-        {
-            get => TargetRegistry?[SelectedAttackIndex];
-        }
-
-        private int SelectedAttackIndex
-        {
-            get => selectedAttackIndex;
-            set
-            {
-                if (selectedAttackIndex != value)
-                {
-                    selectedAttackIndex = value;
-                    OnSelectedAttackChange();
-                }
-                selectedAttackIndex = value;
-            }
-        }
-
-        private int keyFrameIndex;
-
-        private void OnSelectedAttackChange()
-        {
-            sampleTime = 0;
-            KeyFrameIndex = -1;
-            selectedBox = null;
-            KeyFrameIndex = GetKeyFrameIndex();
-        }
 
         public override GUIContent toolbarIcon
         {
             get => m_IconContent;
         }
 
-        public int KeyFrameIndex
+        #endregion Toolbar UI Variables
+
+        #region Color Variables
+
+        public static Color HurtboxColor = Color.green;
+        public static Color HitboxColor = Color.red;
+        public static Color SelectedBoxColor = Color.yellow;
+        public static Color SuperArmorColor = Color.cyan;
+        public static Color HighlightedHandleColor;
+
+        #endregion Color Variables
+
+        #region Combat Data Variables
+
+        private PlayerCombat targetedObject;
+        private SerializedProperty attacks;
+
+        private string[] animationNames = new string[0];
+
+        private int selectedAnimationIndex;
+        private float sampleTime;
+        private int frameDataIndex;
+
+        private CharacterAnimationRegistryObject TargetRegistry
         {
-            get => keyFrameIndex;
+            get => targetedObject?.animationRegistryObject;
+        }
+
+        private Combat.AnimationInfo SelectedAnimation
+        {
+            get => TargetRegistry?[SelectedAnimationIndex];
+        }
+
+        private FrameData SelectedFrameData
+        {
+            get => FrameDataIndex >= 0 && FrameDataIndex < SelectedAnimation.frameData.Count ? SelectedAnimation?.frameData[FrameDataIndex] : null;
+        }
+
+        private int SelectedAnimationIndex
+        {
+            get => selectedAnimationIndex;
             set
             {
-                if (value != keyFrameIndex)
+                if (selectedAnimationIndex != value)
                 {
-                    OnKeyFrameChange();
+                    selectedAnimationIndex = value;
+                    OnSelectedAnimationChange();
                 }
-                keyFrameIndex = value;
+                selectedAnimationIndex = value;
             }
         }
 
-        private void OnKeyFrameChange()
+        public int FrameDataIndex
         {
-            selectedBox = null;
+            get => frameDataIndex;
+            set
+            {
+                if (value != frameDataIndex)
+                {
+                    frameDataIndex = value;
+
+                    OnFrameDataChange();
+                }
+                frameDataIndex = value;
+            }
         }
+
+        public float SampleTime
+        {
+            get => sampleTime;
+            set
+            {
+                if (sampleTime != value)
+                {
+                    OnSampleTimeChange(value);
+                }
+                sampleTime = value;
+            }
+        }
+
+        #endregion Combat Data Variables
+
+        #region UI Variables
+
+        private Rect uiArea;
+        private GUIStyle boxStyle;
+        private GUIStyle buttonStyle;
+        private bool colorGroupOpen;
+        private bool boxInfoOpen;
+        private Vector2 boxInfoScrollPosition;
+        private static bool enabled;
+
+        private string[] BoxTypeNames = new string[2] { "Hit", "Hurt" };
+
+        #endregion UI Variables
+
+        #region Tool Functionality Variables
+
+        private List<EditorBoxInfo> editorBoxes = new List<EditorBoxInfo>();
+
+        private EditorBoxInfo selectedBox;
+
+        private Vector2 curMouseWorldPosition;
+
+        private ToolMode currentToolMode;
+        private int scaleControlIndex = -1;
+
+        private ToolMode CurrentToolMode
+        {
+            get => currentToolMode;
+            set
+            {
+                if (currentToolMode != value)
+                {
+                    OnToolModeChange(value);
+                }
+                currentToolMode = value;
+            }
+        }
+
+        #endregion Tool Functionality Variables
+
+        #region On Value Change Functions
+
+        private void OnSelectedAnimationChange()
+        {
+            SampleTime = 0;
+            Tools.current = Tool.View;
+        }
+
+        private void OnToolModeChange(ToolMode newMode)
+        {
+            if (selectedBox == null && newMode != ToolMode.Select)
+            {
+                CurrentToolMode = ToolMode.Select;
+            }
+
+            if (selectedBox != null)
+            {
+                switch (newMode)
+                {
+                    case ToolMode.Position:
+                        GUIUtility.hotControl = selectedBox.positionControlID;
+                        break;
+
+                    case ToolMode.Rotation:
+                        GUIUtility.hotControl = selectedBox.rotationControlID;
+                        break;
+
+                    case ToolMode.Scale:
+                        //GUIUtility.hotControl = selectedBox.sca;
+                        break;
+
+                    case ToolMode.Vector:
+                        GUIUtility.hotControl = selectedBox.vectorControlID;
+                        break;
+                }
+            }
+        }
+
+        private void OnFrameDataChange()
+        {
+            SelectBox(null);
+            editorBoxes.Clear();
+            CurrentToolMode = ToolMode.Select;
+
+            if (SelectedFrameData != null)
+            {
+                for (int i = 0; i < SelectedFrameData.BoxCount; i++)
+                {
+                    editorBoxes.Add(new EditorBoxInfo(SelectedFrameData[i], targetedObject.transform));
+                }
+            }
+        }
+
+        private void OnSampleTimeChange(float newSampleTime)
+        {
+            if (targetedObject != null && Selection.activeGameObject == targetedObject.gameObject)
+                FrameDataIndex = GetFrameDataIndexAtTime(newSampleTime);
+        }
+
+        #endregion On Value Change Functions
+
+        #region Initialization and Termination
 
         private void OnDisable()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
+            editorBoxes.Clear();
+            SetColors();
         }
 
         private void OnEnable()
         {
-            KeyFrameIndex = -1;
-            targetedObject = null;
-            targetedObject = Selection.activeGameObject?.GetComponent<PlayerCombat>();
             SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.duringSceneGui += OnSceneGUI;
-            Initialize(targetedObject);
+
+            GetColors();
+
+            Initialize();
         }
 
-        private void OnSceneGUI(SceneView obj)
-        {
-            switch (Event.current.type)
-            {
-                case EventType.MouseMove:
-                    OnMouseMove(obj);
-                    break;
-
-                case EventType.MouseDown:
-                    OnMouseDown();
-                    break;
-
-                case EventType.MouseDrag:
-                    OnMouseDrag();
-                    break;
-
-                case EventType.MouseUp:
-                    OnMouseUp();
-                    break;
-
-                //Sets Controls
-                case EventType.Layout:
-                    break;
-                //Draws Handles
-                case EventType.Repaint:
-                    break;
-            }
-        }
-
-        private void OnMouseMove(SceneView sceneView)
-        {
-            Vector3 mousePosition = Event.current.mousePosition;
-            mousePosition.y = sceneView.camera.pixelHeight - mousePosition.y;
-            mousePosition = sceneView.camera.ScreenToWorldPoint(mousePosition);
-            this.mousePosition = mousePosition;
-            boxIndex = -1;
-            if (keyFrameIndex != -1)
-            {
-                for (int i = 0; i < SelectedAttack.keyFrames[keyFrameIndex].hitBoxes.Count; i++)
-                {
-                    if (IsPointInBox(SelectedAttack.keyFrames[keyFrameIndex].hitBoxes[i], this.mousePosition))
-                    {
-                        isHitboxSelected = true;
-                        selectedBox = SelectedAttack.keyFrames[keyFrameIndex].hitBoxes[i];
-                        boxIndex = i;
-                    }
-                }
-            }
-        }
-
-        private void OnMouseDown()
-        {
-        }
-
-        private void OnMouseDrag()
-        {
-        }
-
-        private void OnMouseUp()
-        {
-        }
-
-        private void Initialize(PlayerCombat targetedObject)
+        private void Initialize()
         {
             m_IconContent = new GUIContent()
             {
@@ -178,49 +247,302 @@ namespace Duel.Editor
                 text = "Frame Data Tool",
                 tooltip = "Sets hit and hurt boxes"
             };
-            KeyFrameIndex = -1;
+            enabled = true;
+            editorBoxes.Clear();
+            uiArea = new Rect(10, 10, 400, 270);
+            targetedObject = null;
+            targetedObject = Selection.activeGameObject?.GetComponent<PlayerCombat>();
+            if (targetedObject == null)
+            {
+                enabled = false;
+                return;
+            }
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.duringSceneGui += OnSceneGUI;
+            FrameDataIndex = -1;
+            SelectedAnimationIndex = 0;
+            SampleTime = 0.1f;
 
-            selectedAttackIndex = 0;
-            sampleTime = 0;
+            SampleTime = 0;
             selectedBox = null;
-            boxIndex = -1;
-            attackNames = TargetRegistry.GetAttackAnimationNames();
+            animationNames = TargetRegistry.GetAnimationClipNames();
         }
+
+        #endregion Initialization and Termination
+
+        #region Color Functions
+
+        private void SetColors()
+        {
+            EditorPrefs.SetString("HitboxColor", $"#{ColorUtility.ToHtmlStringRGBA(HitboxColor)}");
+            EditorPrefs.SetString("HurtboxColor", $"#{ColorUtility.ToHtmlStringRGBA(HurtboxColor)}");
+            EditorPrefs.SetString("SuperArmorColor", $"#{ColorUtility.ToHtmlStringRGBA(SuperArmorColor)}");
+            EditorPrefs.SetString("SelectedBoxColor", $"#{ColorUtility.ToHtmlStringRGBA(SelectedBoxColor)}");
+            EditorPrefs.SetString("HighlightedHandleColor", $"#{ColorUtility.ToHtmlStringRGBA(HighlightedHandleColor)}");
+        }
+
+        private void GetColors()
+        {
+            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HitboxColor"), out HitboxColor))
+            {
+                Debug.LogWarning("Failed to load HitboxColor");
+            }
+            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HurtboxColor"), out HurtboxColor))
+            {
+                Debug.LogWarning("Failed to load HurtboxColor");
+            }
+            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("SuperArmorColor"), out SuperArmorColor))
+            {
+                Debug.LogWarning("Failed to load SuperArmorColor");
+            }
+            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("SelectedBoxColor"), out SelectedBoxColor))
+            {
+                Debug.LogWarning("Failed to load SelectedBoxColor");
+            }
+            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HighlightedHandleColor"), out HighlightedHandleColor))
+            {
+                Debug.LogWarning("Failed to load HighlightedHandleColor");
+            }
+        }
+
+        #endregion Color Functions
+
+        #region Scene Functions
+
+        private void OnSceneGUI(SceneView obj)
+        {
+            if (!enabled)
+            {
+                SceneView.duringSceneGui -= OnSceneGUI;
+                return;
+            }
+            sceneView = obj;
+            curMouseWorldPosition = GetWorldPosition(Event.current.mousePosition);
+
+            switch (Event.current.type)
+            {
+                case EventType.MouseMove:
+                    break;
+
+                case EventType.MouseDown:
+                    if (Event.current.button == 0)
+                        OnMouseDown();
+                    break;
+
+                case EventType.MouseDrag:
+                    if (Event.current.button == 0)
+                        OnMouseDrag();
+                    break;
+
+                case EventType.MouseUp:
+                    if (Event.current.button == 0)
+                        OnMouseUp();
+                    break;
+
+                //Sets Controls
+                case EventType.Layout:
+                    OnLayout();
+                    break;
+                //Draws Handles
+                case EventType.Repaint:
+                    bool keyFramesExist = FrameDataIndex >= 0;
+
+                    if (keyFramesExist)
+                    {
+                        PaintBoxes();
+                    }
+                    break;
+            }
+            if (selectedBox != null && Event.current.button == 0)
+                DistributeBoxSceneFunctions();
+        }
+
+        private void OnLayout()
+        {
+            for (int i = 0; i < editorBoxes.Count; i++)
+            {
+                editorBoxes[i].SetControls(CurrentToolMode);
+            }
+        }
+
+        private void OnMouseDown()
+        {
+            if (FrameDataIndex != -1)
+            {
+                if (uiArea.Contains(Event.current.mousePosition))
+                {
+                    return;
+                }
+
+                if (CurrentToolMode == ToolMode.Select)
+                {
+                    if (!uiArea.Contains(Event.current.mousePosition))
+                        SelectBox(null);
+                    SelectBox(GetBoxContainingCursor());
+                }
+                else if (CurrentToolMode == ToolMode.Remove)
+                {
+                    EditorBoxInfo boxToRemove = GetBoxContainingCursor(true);
+                    if (boxToRemove != null)
+                        RemoveBox(boxToRemove);
+                }
+                else if (CurrentToolMode == ToolMode.Add)
+                {
+                    EditorBoxInfo boxToAlter = GetBoxContainingCursor(true);
+                    if (boxToAlter != null)
+                        AlterBox(boxToAlter);
+                    else
+                        AddBox(curMouseWorldPosition, BoxType.Hit);
+                }
+                else if (CurrentToolMode == ToolMode.Vector)
+                {
+                    if (selectedBox.IsPointInVectorControl(curMouseWorldPosition))
+                    {
+                        GUIUtility.hotControl = selectedBox.vectorControlID;
+                    }
+                }
+            }
+        }
+
+        private void OnMouseUp()
+        {
+        }
+
+        private void OnMouseDrag()
+        {
+        }
+
+        private void DistributeBoxSceneFunctions()
+        {
+            DeterminePositionFunctions();
+            DetermineVectorFunctions();
+            DetermineScaleFunctions();
+            DetermineRotationFunctions();
+        }
+
+        #region Box Functions
+
+        private void DeterminePositionFunctions()
+        {
+            if (CurrentToolMode != ToolMode.Position)
+                return;
+            if (Event.current.type == EventType.MouseDown && selectedBox.ContainsPoint(curMouseWorldPosition))
+            {
+                GUIUtility.hotControl = selectedBox.positionControlID;
+            }
+            else if (Event.current.type == EventType.MouseDrag && GUIUtility.hotControl == selectedBox.positionControlID)
+            {
+                selectedBox.Move(GetWorldDelta());
+            }
+        }
+
+        private void DetermineVectorFunctions()
+        {
+            if (CurrentToolMode != ToolMode.Vector)
+                return;
+            if (Event.current.type == EventType.MouseDown && selectedBox.IsPointInVectorControl(curMouseWorldPosition))
+            {
+                GUIUtility.hotControl = selectedBox.vectorControlID;
+            }
+            else if (Event.current.type == EventType.MouseDrag && GUIUtility.hotControl == selectedBox.vectorControlID)
+            {
+                selectedBox.AdjustVector(curMouseWorldPosition);
+            }
+        }
+
+        private void DetermineScaleFunctions()
+        {
+            if (CurrentToolMode != ToolMode.Scale)
+                return;
+
+            if (Event.current.type == EventType.MouseDown)
+            {
+                scaleControlIndex = -1;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (selectedBox.IsPointInScaleControl(curMouseWorldPosition, i))
+                    {
+                        scaleControlIndex = i;
+                        GUIUtility.hotControl = selectedBox.scaleControlIDs[i];
+                        break;
+                    }
+                }
+            }
+            else if (Event.current.type == EventType.MouseDrag && scaleControlIndex > -1 && GUIUtility.hotControl == selectedBox.scaleControlIDs[scaleControlIndex])
+            {
+                selectedBox.PlaceCorner(curMouseWorldPosition, ref scaleControlIndex);
+            }
+            else if (Event.current.type == EventType.MouseUp)
+            {
+                scaleControlIndex = -1;
+            }
+        }
+
+        private void DetermineRotationFunctions()
+        {
+            if (CurrentToolMode != ToolMode.Rotation)
+                return;
+
+            if (Event.current.type == EventType.MouseDown)
+            {
+                if (selectedBox.IsPointInRotationControl(curMouseWorldPosition))
+                {
+                    GUIUtility.hotControl = selectedBox.rotationControlID;
+                }
+            }
+            else if (Event.current.type == EventType.MouseDrag && GUIUtility.hotControl == selectedBox.rotationControlID)
+            {
+                selectedBox.Rotate(curMouseWorldPosition - GetWorldDelta(), curMouseWorldPosition);
+            }
+        }
+
+        #endregion Box Functions
+
+        #endregion Scene Functions
+
+        #region World Position Functions
+
+        private Vector2 GetWorldDelta()
+        {
+            Vector2 oldScreenPosition = Event.current.mousePosition - Event.current.delta;
+
+            Vector2 oldWorldPosition = GetWorldPosition(oldScreenPosition);
+
+            Vector2 worldDelta = GetWorldPosition(Event.current.mousePosition) - oldWorldPosition;
+
+            return worldDelta;
+        }
+
+        private Vector2 GetWorldPosition(Vector2 mousePos)
+        {
+            Vector3 mousePosition = mousePos;
+            mousePosition.y = sceneView.camera.pixelHeight - mousePosition.y;
+            mousePosition = sceneView.camera.ScreenToWorldPoint(mousePosition);
+
+            return mousePosition;
+        }
+
+        #endregion World Position Functions
+
+        #region UI Functions
 
         public override void OnToolGUI(EditorWindow window)
         {
-            KeyFrameIndex = -1;
-            bool attacksExist = attackNames.Length != 0;
+            if (boxStyle == null)
+                boxStyle = new GUIStyle("box");
+            if (buttonStyle == null)
+                buttonStyle = new GUIStyle("Button");
+
+            bool attacksExist = animationNames.Length != 0;
             if (attacksExist)
             {
-                KeyFrameIndex = GetKeyFrameIndex();
                 DrawUI();
                 SampleAnimation();
-                bool keyFramesExist = KeyFrameIndex >= 0;
-
-                if (keyFramesExist)
-                {
-                    DrawControls();
-                    DrawBoxUI();
-                }
             }
             else
             {
                 DrawWarning();
             }
-        }
-
-        private void DrawBoxUI()
-        {
-            if (selectedBox == null)
-                return;
-            Handles.BeginGUI();
-            GUIStyle boxStyle = new GUIStyle("box");
-            GUILayout.BeginArea(new Rect(400, 10, 350, 80), boxStyle);
-            string boxType = isHitboxSelected ? "Hitbox" : "Hurtbox";
-            EditorGUILayout.HelpBox($"{boxType}[{boxIndex}]", MessageType.Info);
-            GUILayout.EndArea();
-            Handles.EndGUI();
         }
 
         private void DrawWarning()
@@ -237,182 +559,397 @@ namespace Duel.Editor
         {
             Handles.BeginGUI();
 
-            GUIStyle boxStyle = new GUIStyle("box");
-            Rect area = new Rect(10, 10, 400, 270);
-
-            EditorGUIUtility.AddCursorRect(area, MouseCursor.Arrow);
-            GUILayout.BeginArea(area, boxStyle);
+            EditorGUIUtility.AddCursorRect(uiArea, MouseCursor.Arrow);
+            GUILayout.BeginArea(uiArea, boxStyle);
+            EditorGUILayout.BeginHorizontal();
             GUILayout.Label(targetedObject.name);
 
-            SelectedAttackIndex = EditorGUILayout.Popup("Attack", SelectedAttackIndex, attackNames);
-
-            EditorGUILayout.BeginHorizontal();
-            sampleTime = EditorGUILayout.Slider(sampleTime, 0, SelectedAttack.attackAnimation.length);
-            EditorGUILayout.LabelField("KF:" + KeyFrameIndex, GUILayout.MaxWidth(30));
             EditorGUILayout.EndHorizontal();
-            if (KeyFrameIndex >= 0 && SelectedAttack.keyFrames.Count > KeyFrameIndex)
-            {
-                EditorGUILayout.LabelField("Hitbox Count: " + SelectedAttack.keyFrames[KeyFrameIndex].hitBoxes.Count);
-                EditorGUILayout.LabelField("Hurtbox Count: " + SelectedAttack.keyFrames[KeyFrameIndex].hurtBoxes.Count);
-                EditorGUILayout.BeginHorizontal();
-                FrameData currentFrameData = SelectedAttack.keyFrames[KeyFrameIndex];
-                if (GUILayout.Button("Add Hitbox"))
-                {
-                    currentFrameData.hitBoxes.Add(new HitboxInfo());
-                }
-                if (GUILayout.Button("Add Hurtbox"))
-                {
-                    currentFrameData.hurtBoxes.Add(new HurtboxInfo());
-                }
-                EditorGUILayout.EndHorizontal();
-            }
 
+            SelectedAnimationIndex = EditorGUILayout.Popup("Animation", SelectedAnimationIndex, animationNames);
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Reset Keyframes"))
             {
-                ResetKeyFrames(SelectedAttack);
+                ResetKeyFrames(SelectedAnimation);
             }
+            if (GUILayout.Button("Fill Keyframes"))
+            {
+                FillKeyFrames();
+            }
+            EditorGUILayout.EndHorizontal();
 
-            hurtboxColor = EditorGUILayout.ColorField("Hurtbox Color", hurtboxColor);
-            hitboxColor = EditorGUILayout.ColorField("Hitbox Color", hitboxColor);
-            superArmorColor = EditorGUILayout.ColorField("Super Armor Color", superArmorColor);
-            EditorGUILayout.Vector2Field("Mouse Point", mousePosition);
-            EditorGUILayout.Vector2Field("Box Point", positionInBox);
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("ST:" + (int)(SampleTime * SelectedAnimation.clip.frameRate), GUILayout.MaxWidth(30));
+            SampleTime = EditorGUILayout.Slider(SampleTime, 0, SelectedAnimation.clip.length);
+            EditorGUILayout.LabelField("KF:" + FrameDataIndex, GUILayout.MaxWidth(30));
+            EditorGUILayout.EndHorizontal();
+
+            DrawKeyframeButtons();
+
+            if (SelectedFrameData != null)
+            {
+                DrawFrameDataInfo();
+                DrawSelectedBoxInfo();
+                DrawToolModeSelector();
+            }
+            DrawColors();
 
             GUILayout.EndArea();
             Handles.EndGUI();
             EditorUtility.SetDirty(TargetRegistry);
         }
 
-        private void DrawControls()
+        private void DrawKeyframeButtons()
         {
-            if (SelectedAttack == null)
-                return;
-            for (int i = 0; i < SelectedAttack.keyFrames[KeyFrameIndex].hitBoxes.Count; i++)
+            bool frameDataExistsAtSampleTime = SelectedAnimation.clip.events.Any(e =>
+                Mathf.Approximately(e.time, (int)(SampleTime * SelectedAnimation.clip.frameRate) / SelectedAnimation.clip.frameRate));
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(SelectedFrameData != null && frameDataExistsAtSampleTime);
+
+            if (GUILayout.Button("Add Keyframe"))
             {
-                DrawHitbox(i);
+                AddKeyframeAtSampleTime();
+            }
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(SelectedFrameData == null || !frameDataExistsAtSampleTime);
+            if (GUILayout.Button("Remove Keyframe"))
+            {
+                RemoveKeyframeAtSampleTime();
+            }
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawSelectedBoxInfo()
+        {
+            EditorGUI.BeginDisabledGroup(selectedBox == null);
+            boxInfoOpen = EditorGUILayout.Foldout(boxInfoOpen, "Selected Box Info") && selectedBox != null;
+            boxInfoScrollPosition = EditorGUILayout.BeginScrollView(boxInfoScrollPosition, EditorStyles.helpBox);
+            if (boxInfoOpen)
+            {
+                selectedBox.boxInfo.position = EditorGUILayout.Vector2Field("Position", selectedBox.boxInfo.position);
+                selectedBox.boxInfo.rotation = EditorGUILayout.FloatField("Rotation", selectedBox.boxInfo.rotation);
+                selectedBox.boxInfo.size = EditorGUILayout.Vector2Field("Scale", selectedBox.boxInfo.size);
+                DrawBoxTypeSelector();
+                EditorGUI.BeginDisabledGroup(selectedBox.BoxType != BoxType.Hit);
+
+                if (selectedBox.boxInfo is HitboxInfo hitboxInfo)
+                {
+                    hitboxInfo.knockbackDirection = EditorGUILayout.Vector2Field("Knockback Direction", hitboxInfo.knockbackDirection);
+                    hitboxInfo.knockbackDirection = hitboxInfo.knockbackDirection.normalized;
+
+                    hitboxInfo.knockbackForce = EditorGUILayout.FloatField("Force", hitboxInfo.knockbackForce);
+                    hitboxInfo.damage = EditorGUILayout.FloatField("Damage Dealt", hitboxInfo.damage);
+                    hitboxInfo.hitStun = EditorGUILayout.FloatField("Hitstun Duration", hitboxInfo.hitStun);
+                }
+
+                EditorGUI.EndDisabledGroup();
+                EditorGUI.BeginDisabledGroup(selectedBox.BoxType == BoxType.Hit);
+                if (selectedBox.boxInfo is HurtboxInfo hurtboxInfo)
+                {
+                    hurtboxInfo.superArmor = EditorGUILayout.Toggle("Superarmor", hurtboxInfo.superArmor);
+                    EditorGUI.BeginDisabledGroup(hurtboxInfo.superArmor);
+                    hurtboxInfo.damageMitigation = EditorGUILayout.Slider("Damage Mitigation", hurtboxInfo.damageMitigation, 0, 100);
+                    hurtboxInfo.hitstunMitigation = EditorGUILayout.Slider("Hitstun Mitigation", hurtboxInfo.hitstunMitigation, 0, 100);
+                }
+
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUILayout.EndScrollView();
+
+            EditorGUI.EndDisabledGroup();
+        }
+
+        private void DrawBoxTypeSelector()
+        {
+            int boxType = selectedBox.BoxType == 0 ? 0 : 1;
+            int boxTypeSelection = GUILayout.Toolbar(boxType, BoxTypeNames);
+            if (boxTypeSelection != boxType)
+            {
+                AlterBox(selectedBox);
             }
         }
 
-        private HitboxInfo GetHitboxInfo(int index)
+        private void DrawFrameDataInfo()
         {
-            return SelectedAttack.keyFrames[KeyFrameIndex].hitBoxes[index];
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Hitbox Count: " + SelectedFrameData.HitboxCount);
+            EditorGUILayout.LabelField("Hurtbox Count: " + SelectedFrameData.HurtboxCount);
+            EditorGUILayout.EndHorizontal();
         }
 
-        private HurtboxInfo GetHurtboxInfo(int index)
+        private void DrawToolModeSelector()
         {
-            return SelectedAttack.keyFrames[KeyFrameIndex].hurtBoxes[index];
+            EditorGUILayout.BeginHorizontal();
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Select, "Select", buttonStyle) ? ToolMode.Select : CurrentToolMode;
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Add, "Add", buttonStyle) ? ToolMode.Add : CurrentToolMode;
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Remove, "Remove", buttonStyle) ? ToolMode.Remove : CurrentToolMode;
+            EditorGUI.BeginDisabledGroup(selectedBox == null);
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Position, "Position", buttonStyle) ? ToolMode.Position : CurrentToolMode;
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Rotation, "Rotation", buttonStyle) ? ToolMode.Rotation : CurrentToolMode;
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Scale, "Scale", buttonStyle) ? ToolMode.Scale : CurrentToolMode;
+            CurrentToolMode = GUILayout.Toggle(CurrentToolMode == ToolMode.Vector, "Vector", buttonStyle) ? ToolMode.Vector : CurrentToolMode;
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
         }
+
+        private void DrawColors()
+        {
+            colorGroupOpen = EditorGUILayout.Foldout(colorGroupOpen, "Colors");
+            if (colorGroupOpen)
+            {
+                HurtboxColor = EditorGUILayout.ColorField("Hurtbox Color", HurtboxColor);
+                HitboxColor = EditorGUILayout.ColorField("Hitbox Color", HitboxColor);
+                SuperArmorColor = EditorGUILayout.ColorField("Super Armor Color", SuperArmorColor);
+                SelectedBoxColor = EditorGUILayout.ColorField("Selected Box Color", SelectedBoxColor);
+            }
+        }
+
+        #endregion UI Functions
+
+        #region Box Handling Functions
+
+        private void SelectBox(EditorBoxInfo boxToSelect)
+
+        {
+            if (selectedBox != null)
+                selectedBox.selected = false;
+
+            selectedBox = boxToSelect;
+
+            if (selectedBox != null)
+            {
+                GUIUtility.hotControl = selectedBox.positionControlID;
+                selectedBox.selected = true;
+            }
+        }
+
+        private void PaintBoxes()
+        {
+            for (int i = 0; i < editorBoxes.Count; i++)
+            {
+                editorBoxes[i].Draw();
+            }
+
+            if (selectedBox != null)
+            {
+                if (currentToolMode == ToolMode.Rotation)
+                {
+                    selectedBox.DrawRotation();
+                }
+                else if (currentToolMode == ToolMode.Scale)
+                {
+                    selectedBox.DrawScale();
+                }
+                else if (currentToolMode == ToolMode.Vector)
+                {
+                    selectedBox.DrawVector();
+                }
+            }
+        }
+
+        private void AlterBox(EditorBoxInfo boxToAlter)
+        {
+            if (boxToAlter.BoxType == BoxType.Hurt)
+            {
+                int boxIndex = SelectedFrameData.boxes.IndexOf(boxToAlter.boxInfo);
+
+                BoxInfo oldBox = SelectedFrameData[boxIndex];
+                SelectedFrameData.Remove(oldBox);
+
+                BoxInfo newBox = new HitboxInfo() { position = oldBox.position, rotation = oldBox.rotation, size = oldBox.size };
+                boxToAlter.boxInfo = newBox;
+                SelectedFrameData.AddBox(newBox);
+            }
+            else
+            {
+                int boxIndex = SelectedFrameData.boxes.IndexOf(boxToAlter.boxInfo);
+
+                BoxInfo oldBox = SelectedFrameData[boxIndex];
+                SelectedFrameData.Remove(oldBox);
+
+                BoxInfo newBox = new HurtboxInfo() { position = oldBox.position, rotation = oldBox.rotation, size = oldBox.size };
+                boxToAlter.boxInfo = newBox;
+                SelectedFrameData.AddBox(newBox);
+            }
+        }
+
+        #endregion Box Handling Functions
+
+        #region Helper Functions
 
         private void SampleAnimation()
         {
-            SelectedAttack.attackAnimation.SampleAnimation(targetedObject.gameObject, sampleTime);
-            if (SelectedAttack.keyFrames.Count > KeyFrameIndex && KeyFrameIndex >= 0)
-                targetedObject.UpdateCollisionBoxes(SelectedAttack.keyFrames[KeyFrameIndex]);
+            SelectedAnimation.clip.SampleAnimation(targetedObject.gameObject, SampleTime);
+            if (SelectedAnimation.frameData.Count > FrameDataIndex && FrameDataIndex >= 0)
+                targetedObject.UpdateCollisionBoxes(SelectedAnimation.frameData[FrameDataIndex]);
         }
 
-        private void DrawHitbox(int index)
+        private void ResetKeyFrames(Combat.AnimationInfo attackInfo)
         {
-            HitboxInfo targetHitbox = GetHitboxInfo(index);
-
-            Vector2 adjustedPosition = targetedObject.transform.InverseTransformPoint(targetHitbox.position);
-            Quaternion rotation = Quaternion.Euler(0, 0, targetHitbox.rotation);
-
-            Matrix4x4 m = Matrix4x4.Translate(adjustedPosition) * Matrix4x4.Rotate(rotation);
-
-            Vector3[] hitboxVerts = new Vector3[4];
-
-            hitboxVerts[0] = m.MultiplyPoint3x4(new Vector3(-targetHitbox.size.x, -targetHitbox.size.y, 0));
-            hitboxVerts[1] = m.MultiplyPoint3x4(new Vector3(targetHitbox.size.x, -targetHitbox.size.y, 0));
-            hitboxVerts[2] = m.MultiplyPoint3x4(new Vector3(targetHitbox.size.x, targetHitbox.size.y, 0));
-            hitboxVerts[3] = m.MultiplyPoint3x4(new Vector3(-targetHitbox.size.x, targetHitbox.size.y, 0));
-
-            Handles.DrawSolidRectangleWithOutline(hitboxVerts, hitboxColor, Color.yellow);
-
-            targetHitbox.position = targetedObject.transform.TransformPoint(Handles.FreeMoveHandle(adjustedPosition, rotation, HandleUtility.GetHandleSize(adjustedPosition), Vector3.one * .1f, (a, b, c, d, e) => PositionHandle(a, b, c, d, e, targetHitbox, true, index)));
-        }
-
-        private bool IsPointInBox(BoxInfo box, Vector3 point)
-        {
-            bool pointInBox = false;
-            Vector2 adjustedPosition = targetedObject.transform.InverseTransformPoint(box.position);
-            Quaternion rotation = Quaternion.Euler(0, 0, box.rotation);
-            Matrix4x4 m = Matrix4x4.Translate(adjustedPosition) * Matrix4x4.Rotate(rotation);
-
-            Vector3 adjustedPoint = m.inverse.MultiplyPoint3x4(point);
-            positionInBox = adjustedPoint;
-            if (Mathf.Abs(adjustedPoint.x) <= Mathf.Abs(box.size.x) && Mathf.Abs(adjustedPoint.y) <= Mathf.Abs(box.size.y))
+            attackInfo.frameData.Clear();
+            foreach (var item in attackInfo.clip.events)
             {
-                pointInBox = true;
-            }
-
-            return pointInBox;
-        }
-
-        private void PositionHandle(int controlId, Vector3 pos, Quaternion rot, float size, EventType ev, BoxInfo box, bool isHitbox, int index)
-        {
-            Handles.RectangleHandleCap(controlId, pos, rot, size, ev);
-
-            /* if (HandleUtility.nearestControl == controlId)
-             {
-                 isHitboxSelected = isHitbox;
-                 selectedBox = box;
-                 boxIndex = index;
-             }*/
-        }
-
-        private void DrawHurtbox(int index)
-        {
-            HurtboxInfo targetHurtbox = GetHurtboxInfo(index);
-
-            Vector2 adjustedPosition = targetedObject.transform.InverseTransformPoint(targetHurtbox.position);
-            Quaternion rotation = Quaternion.Euler(0, 0, targetHurtbox.rotation);
-
-            Matrix4x4 initial = Matrix4x4.Translate(adjustedPosition);
-            Matrix4x4 rotationMatrix = Matrix4x4.Rotate(rotation);
-            Matrix4x4 final = Matrix4x4.Translate(adjustedPosition * -1);
-
-            Matrix4x4 transformation = initial * rotationMatrix * final;
-
-            Vector3[] hitboxVerts = new Vector3[4];
-
-            hitboxVerts[0] = transformation.MultiplyPoint3x4(new Vector3(targetHurtbox.position.x - targetHurtbox.size.x, targetHurtbox.position.y - targetHurtbox.size.y, 0));
-            hitboxVerts[1] = transformation.MultiplyPoint3x4(new Vector3(targetHurtbox.position.x + targetHurtbox.size.x, targetHurtbox.position.y - targetHurtbox.size.y, 0));
-            hitboxVerts[2] = transformation.MultiplyPoint3x4(new Vector3(targetHurtbox.position.x + targetHurtbox.size.x, targetHurtbox.position.y + targetHurtbox.size.y, 0));
-            hitboxVerts[3] = transformation.MultiplyPoint3x4(new Vector3(targetHurtbox.position.x - targetHurtbox.size.x, targetHurtbox.position.y + targetHurtbox.size.y, 0));
-
-            Handles.DrawSolidRectangleWithOutline(hitboxVerts, targetHurtbox.superArmor ? superArmorColor : hurtboxColor, Color.yellow);
-
-            targetHurtbox.position = targetedObject.transform.TransformPoint(Handles.PositionHandle(adjustedPosition, rotation));
-            targetHurtbox.rotation = Handles.RotationHandle(rotation, adjustedPosition).eulerAngles.z;
-            targetHurtbox.size = Handles.ScaleHandle(targetHurtbox.size, adjustedPosition, rotation, HandleUtility.GetHandleSize(adjustedPosition));
-        }
-
-        private void ResetKeyFrames(AttackInfo attackInfo)
-        {
-            attackInfo.keyFrames.Clear();
-            foreach (var item in attackInfo.attackAnimation.events)
-            {
-                if (item.stringParameter == "AttackKeyFrame")
+                if ((PlayerAnimationEventType)Utilities.GetByte(item.intParameter, 0) == (int)PlayerAnimationEventType.AttackKeyFrame)
                 {
-                    attackInfo.keyFrames.Add(new FrameData());
+                    attackInfo.frameData.Add(new FrameData());
                 }
             }
         }
 
-        private int GetKeyFrameIndex()
+        private void FillKeyFrames()
+        {
+            float length = SelectedAnimation.clip.length;
+            float fps = SelectedAnimation.clip.frameRate;
+            float time = 0;
+            List<AnimationEvent> events = new List<AnimationEvent>();
+            events.AddRange(AnimationUtility.GetAnimationEvents(SelectedAnimation.clip));
+
+            while (time < length)
+            {
+                if (!SelectedAnimation.clip.events.Any(e => Mathf.Approximately(e.time, (int)(time * SelectedAnimation.clip.frameRate) / SelectedAnimation.clip.frameRate)))
+                {
+                    AnimationEvent newEvent = new AnimationEvent();
+
+                    float newTime = time * SelectedAnimation.clip.frameRate;
+                    int closestSample = (int)(newTime);
+
+                    newEvent.time = closestSample / SelectedAnimation.clip.frameRate;
+                    newEvent.functionName = "InvokeAnimationEvent";
+
+                    byte eventType = (byte)PlayerAnimationEventType.AttackKeyFrame;
+                    byte animationIndex = (byte)SelectedAnimationIndex;
+                    byte frameDataIndex = (byte)closestSample;
+
+                    int value = System.BitConverter.ToInt32(new byte[] { eventType, animationIndex, frameDataIndex, 0 }, 0);
+                    newEvent.intParameter = value;
+                    Debug.Log(closestSample);
+                    SelectedAnimation.frameData.Insert(frameDataIndex, new FrameData());
+                    events.Add(newEvent);
+                }
+                time += 1 / fps;
+            }
+
+            AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, events.ToArray());
+
+            OnSampleTimeChange(SampleTime);
+        }
+
+        private int GetFrameDataIndexAtTime(float time)
         {
             int indexOfLastKeyFrame = -1;
-            float timeProgression = 0;
-            for (int i = 0; i < SelectedAttack.attackAnimation.events.Length; i++)
+            int indexCount = -1;
+            AnimationEvent lastFrameData = SelectedAnimation.clip.events.OrderBy(x => x.time).Where(@event =>
             {
-                if (SelectedAttack.attackAnimation.events[i].stringParameter == "AttackKeyFrame" && SelectedAttack.attackAnimation.events[i].time > timeProgression && SelectedAttack.attackAnimation.events[i].time <= sampleTime)
-                {
-                    timeProgression = SelectedAttack.attackAnimation.events[i].time;
-                    indexOfLastKeyFrame = i;
-                }
-            }
+                indexCount++;
+                bool eventTimeIsBeforeSample = @event.time <= time;
+                bool animationEventTypeIsAttack = (PlayerAnimationEventType)Utilities.GetByte(@event.intParameter, 0) == PlayerAnimationEventType.AttackKeyFrame;
+                bool meetsCriteria = eventTimeIsBeforeSample && animationEventTypeIsAttack;
+                if (meetsCriteria)
+                    indexOfLastKeyFrame = indexCount;
+                return meetsCriteria;
+            }).LastOrDefault();
 
             return indexOfLastKeyFrame;
         }
+
+        private void AddBox(Vector2 worldPosition, BoxType boxType)
+        {
+            BoxInfo newBox = null;
+            switch (boxType)
+            {
+                case BoxType.Hit:
+                    newBox = new HitboxInfo();
+                    break;
+
+                case BoxType.Hurt:
+                    newBox = new HurtboxInfo();
+                    break;
+
+                case BoxType.Super:
+                    newBox = new HurtboxInfo() { superArmor = true };
+                    break;
+            }
+            newBox.position = targetedObject.transform.InverseTransformPoint(worldPosition);
+
+            SelectedFrameData.AddBox(newBox);
+            EditorBoxInfo newBoxInfo = new EditorBoxInfo(newBox, targetedObject.transform);
+            editorBoxes.Add(newBoxInfo);
+        }
+
+        private void RemoveBox(EditorBoxInfo boxToRemove)
+        {
+            SelectedFrameData.Remove(boxToRemove.boxInfo);
+            editorBoxes.Remove(boxToRemove);
+        }
+
+        private EditorBoxInfo GetBoxContainingCursor(bool topDown = false)
+        {
+            EditorBoxInfo boxContainingCursor = null;
+
+            if (topDown)
+            {
+                for (int i = editorBoxes.Count - 1; i >= 0; i--)
+                {
+                    if (editorBoxes[i].ContainsPoint(curMouseWorldPosition))
+                    {
+                        boxContainingCursor = editorBoxes[i];
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < editorBoxes.Count; i++)
+                {
+                    if (editorBoxes[i].ContainsPoint(curMouseWorldPosition))
+                    {
+                        boxContainingCursor = editorBoxes[i];
+                    }
+                }
+            }
+
+            return boxContainingCursor;
+        }
+
+        private void AddKeyframeAtSampleTime()
+        {
+            FrameData newFrameData = new FrameData();
+            SelectedAnimation.frameData.Insert(Mathf.Max(0, FrameDataIndex), newFrameData);
+            AnimationEvent newEvent = new AnimationEvent();
+
+            float newTime = SampleTime * SelectedAnimation.clip.frameRate;
+            int closestSample = (int)(newTime);
+
+            newEvent.time = closestSample / SelectedAnimation.clip.frameRate;
+            newEvent.functionName = "InvokeAnimationEvent";
+
+            byte eventType = (byte)PlayerAnimationEventType.AttackKeyFrame;
+            byte animationIndex = (byte)SelectedAnimationIndex;
+            byte frameDataIndex = (byte)(FrameDataIndex + 1);
+
+            int value = System.BitConverter.ToInt32(new byte[] { eventType, animationIndex, frameDataIndex, 0 }, 0);
+            newEvent.intParameter = value;
+
+            List<AnimationEvent> currentAnimationEvents = new List<AnimationEvent>();
+            currentAnimationEvents.AddRange(AnimationUtility.GetAnimationEvents(SelectedAnimation.clip));
+            currentAnimationEvents.Add(newEvent);
+
+            AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, currentAnimationEvents.OrderBy(s => s.time).ToArray());
+            OnSampleTimeChange(SampleTime);
+        }
+
+        private void RemoveKeyframeAtSampleTime()
+        {
+            List<AnimationEvent> currentAnimationEvents = new List<AnimationEvent>();
+            currentAnimationEvents.AddRange(AnimationUtility.GetAnimationEvents(SelectedAnimation.clip));
+            currentAnimationEvents.RemoveAll(e => Mathf.Approximately(e.time, (int)(SampleTime * SelectedAnimation.clip.frameRate) / SelectedAnimation.clip.frameRate));
+            SelectedAnimation.frameData.Remove(SelectedFrameData);
+            AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, currentAnimationEvents.OrderBy(s => s.time).ToArray());
+            OnSampleTimeChange(SampleTime);
+        }
+
+        #endregion Helper Functions
     }
 }

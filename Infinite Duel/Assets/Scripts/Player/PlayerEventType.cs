@@ -35,6 +35,11 @@
         void OnAnimationEvent(PlayerAnimationEvent eventArgs);
     }
 
+    public interface IHitSubscriber
+    {
+        void OnHit(PlayerHitEvent eventArgs);
+    }
+
     public delegate void GroundStateUpdateSubscription(PlayerGroundStateUpdateEvent eventArgs);
 
     public delegate void JumpSubscription(PlayerJumpEvent eventArgs);
@@ -48,4 +53,6 @@
     public delegate void AnimationStateEventSubscription(PlayerAnimationStateEvent eventArgs);
 
     public delegate void AnimationEventSubscription(PlayerAnimationEvent eventArgs);
+
+    public delegate void HitSubscription(PlayerHitEvent eventArgs);
 }
