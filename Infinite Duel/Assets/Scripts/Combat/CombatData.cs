@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Duel.PlayerSystems;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Duel.Combat
@@ -17,10 +18,20 @@ namespace Duel.Combat
     {
         public AnimationClip clip;
         public List<FrameData> frameData = new List<FrameData>();
+
+        public void SortFrameData()
+        {
+            frameData.Sort((f1, f2) => f1.Time.CompareTo(f2.Time));
+        }
     }
 
     public class FrameData
     {
+        public float Time
+        {
+            get => time; private set => time = value;
+        }
+
         public BoxInfo this[int index]
         {
             get
@@ -56,6 +67,14 @@ namespace Duel.Combat
 
         [SerializeField, HideInInspector]
         private int hurtboxCount;
+
+        [SerializeField]
+        private float time;
+
+        public FrameData(float time)
+        {
+            Time = time;
+        }
 
         public void AddBox(BoxInfo box)
         {

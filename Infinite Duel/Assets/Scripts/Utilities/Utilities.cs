@@ -29,6 +29,14 @@ namespace Duel
             return value;
         }
 
+        public static bool TryParseHtmlStringToNullableColor(string htmlString, out Color? color)
+        {
+            Color value = new Color();
+            bool succeeded = ColorUtility.TryParseHtmlString(htmlString, out value);
+            color = succeeded ? (Color?)value : null;
+            return succeeded;
+        }
+
         public static byte GetByte(int value, int index)
         {
             return System.BitConverter.GetBytes(value)[index];

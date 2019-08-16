@@ -42,11 +42,117 @@ namespace Duel.Editor
 
         #region Color Variables
 
-        public static Color HurtboxColor = Color.green;
-        public static Color HitboxColor = Color.red;
-        public static Color SelectedBoxColor = Color.yellow;
-        public static Color SuperArmorColor = Color.cyan;
-        public static Color HighlightedHandleColor;
+        private static Color? hurtboxColor;
+        private static Color? hitboxColor;
+        private static Color? selectedBoxColor;
+        private static Color? superArmorColor;
+        private static Color? highlightedHandleColor;
+
+        public static Color? HurtboxColor
+        {
+            get
+            {
+                if (hurtboxColor == null)
+                {
+                    if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HurtboxColor"), out hurtboxColor))
+                    {
+                        Debug.LogWarning("Failed to load HurtboxColor");
+                    }
+                }
+                return hurtboxColor;
+            }
+
+            set
+            {
+                if (hurtboxColor != value)
+                    EditorPrefs.SetString("HurtboxColor", $"#{ColorUtility.ToHtmlStringRGBA((Color)value)}");
+                hurtboxColor = value;
+            }
+        }
+
+        public static Color? HitboxColor
+        {
+            get
+            {
+                if (hitboxColor == null)
+                {
+                    if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HitboxColor"), out hitboxColor))
+                    {
+                        Debug.LogWarning("Failed to load HitboxColor");
+                    }
+                }
+                return hitboxColor;
+            }
+            set
+            {
+                if (hitboxColor != value)
+                    EditorPrefs.SetString("HitboxColor", $"#{ColorUtility.ToHtmlStringRGBA((Color)value)}");
+                hitboxColor = value;
+            }
+        }
+
+        public static Color? SelectedBoxColor
+        {
+            get
+            {
+                if (selectedBoxColor == null)
+                {
+                    if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("SelectedBoxColor"), out selectedBoxColor))
+                    {
+                        Debug.LogWarning("Failed to load SelectedBoxColor");
+                    }
+                }
+                return selectedBoxColor;
+            }
+            set
+            {
+                if (selectedBoxColor != value)
+                    EditorPrefs.SetString("SelectedBoxColor", $"#{ColorUtility.ToHtmlStringRGBA((Color)value)}");
+                selectedBoxColor = value;
+            }
+        }
+
+        public static Color? SuperArmorColor
+        {
+            get
+            {
+                if (superArmorColor == null)
+                {
+                    if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("SuperArmorColor"), out superArmorColor))
+                    {
+                        Debug.LogWarning("Failed to load SuperArmorColor");
+                    }
+                }
+                return superArmorColor;
+            }
+            set
+            {
+                if (superArmorColor != value)
+                    EditorPrefs.SetString("SuperArmorColor", $"#{ColorUtility.ToHtmlStringRGBA((Color)value)}");
+                superArmorColor = value;
+            }
+        }
+
+        public static Color? HighlightedHandleColor
+        {
+            get
+            {
+                if (highlightedHandleColor == null)
+                {
+                    if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HighlightedHandleColor"), out highlightedHandleColor))
+                    {
+                        Debug.LogWarning("Failed to load HighlightedHandleColor");
+                    }
+                }
+                return highlightedHandleColor;
+            }
+            set
+            {
+                if (highlightedHandleColor != value)
+                    EditorPrefs.SetString("HighlightedHandleColor", $"#{ColorUtility.ToHtmlStringRGBA((Color)value)}");
+                highlightedHandleColor = value;
+            }
+        }
 
         #endregion Color Variables
 
@@ -165,7 +271,18 @@ namespace Duel.Editor
         private void OnSelectedAnimationChange()
         {
             SampleTime = 0;
-            Tools.current = Tool.View;
+            //Tools.current = Tool.View;
+            CurrentToolMode = ToolMode.Select;
+            editorBoxes.Clear();
+            CurrentToolMode = ToolMode.Select;
+
+            if (SelectedFrameData != null)
+            {
+                for (int i = 0; i < SelectedFrameData.BoxCount; i++)
+                {
+                    editorBoxes.Add(new EditorBoxInfo(SelectedFrameData[i], targetedObject.transform));
+                }
+            }
         }
 
         private void OnToolModeChange(ToolMode newMode)
@@ -227,14 +344,11 @@ namespace Duel.Editor
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             editorBoxes.Clear();
-            SetColors();
         }
 
         private void OnEnable()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
-
-            GetColors();
 
             Initialize();
         }
@@ -270,50 +384,12 @@ namespace Duel.Editor
 
         #endregion Initialization and Termination
 
-        #region Color Functions
-
-        private void SetColors()
-        {
-            EditorPrefs.SetString("HitboxColor", $"#{ColorUtility.ToHtmlStringRGBA(HitboxColor)}");
-            EditorPrefs.SetString("HurtboxColor", $"#{ColorUtility.ToHtmlStringRGBA(HurtboxColor)}");
-            EditorPrefs.SetString("SuperArmorColor", $"#{ColorUtility.ToHtmlStringRGBA(SuperArmorColor)}");
-            EditorPrefs.SetString("SelectedBoxColor", $"#{ColorUtility.ToHtmlStringRGBA(SelectedBoxColor)}");
-            EditorPrefs.SetString("HighlightedHandleColor", $"#{ColorUtility.ToHtmlStringRGBA(HighlightedHandleColor)}");
-        }
-
-        private void GetColors()
-        {
-            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HitboxColor"), out HitboxColor))
-            {
-                Debug.LogWarning("Failed to load HitboxColor");
-            }
-            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HurtboxColor"), out HurtboxColor))
-            {
-                Debug.LogWarning("Failed to load HurtboxColor");
-            }
-            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("SuperArmorColor"), out SuperArmorColor))
-            {
-                Debug.LogWarning("Failed to load SuperArmorColor");
-            }
-            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("SelectedBoxColor"), out SelectedBoxColor))
-            {
-                Debug.LogWarning("Failed to load SelectedBoxColor");
-            }
-            if (!ColorUtility.TryParseHtmlString(EditorPrefs.GetString("HighlightedHandleColor"), out HighlightedHandleColor))
-            {
-                Debug.LogWarning("Failed to load HighlightedHandleColor");
-            }
-        }
-
-        #endregion Color Functions
-
         #region Scene Functions
 
         private void OnSceneGUI(SceneView obj)
         {
             if (!enabled)
             {
-                SceneView.duringSceneGui -= OnSceneGUI;
                 return;
             }
             sceneView = obj;
@@ -355,6 +431,8 @@ namespace Duel.Editor
             }
             if (selectedBox != null && Event.current.button == 0)
                 DistributeBoxSceneFunctions();
+
+            enabled = false;
         }
 
         private void OnLayout()
@@ -470,7 +548,7 @@ namespace Duel.Editor
             }
             else if (Event.current.type == EventType.MouseDrag && scaleControlIndex > -1 && GUIUtility.hotControl == selectedBox.scaleControlIDs[scaleControlIndex])
             {
-                selectedBox.PlaceCorner(curMouseWorldPosition, ref scaleControlIndex);
+                selectedBox.PlaceCorner(curMouseWorldPosition, scaleControlIndex);
             }
             else if (Event.current.type == EventType.MouseUp)
             {
@@ -528,6 +606,7 @@ namespace Duel.Editor
 
         public override void OnToolGUI(EditorWindow window)
         {
+            enabled = true;
             if (boxStyle == null)
                 boxStyle = new GUIStyle("box");
             if (buttonStyle == null)
@@ -581,7 +660,7 @@ namespace Duel.Editor
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField("ST:" + (int)(SampleTime * SelectedAnimation.clip.frameRate), GUILayout.MaxWidth(30));
-            SampleTime = EditorGUILayout.Slider(SampleTime, 0, SelectedAnimation.clip.length);
+            SampleTime = EditorGUILayout.Slider(SampleTime, 0, SelectedAnimation.clip.length * .999f);
             EditorGUILayout.LabelField("KF:" + FrameDataIndex, GUILayout.MaxWidth(30));
             EditorGUILayout.EndHorizontal();
 
@@ -590,7 +669,12 @@ namespace Duel.Editor
             if (SelectedFrameData != null)
             {
                 DrawFrameDataInfo();
+                EditorGUI.BeginChangeCheck();
                 DrawSelectedBoxInfo();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    sceneView.Repaint();
+                }
                 DrawToolModeSelector();
             }
             DrawColors();
@@ -626,7 +710,7 @@ namespace Duel.Editor
         {
             EditorGUI.BeginDisabledGroup(selectedBox == null);
             boxInfoOpen = EditorGUILayout.Foldout(boxInfoOpen, "Selected Box Info") && selectedBox != null;
-            boxInfoScrollPosition = EditorGUILayout.BeginScrollView(boxInfoScrollPosition, EditorStyles.helpBox);
+            boxInfoScrollPosition = EditorGUILayout.BeginScrollView(boxInfoScrollPosition);
             if (boxInfoOpen)
             {
                 selectedBox.boxInfo.position = EditorGUILayout.Vector2Field("Position", selectedBox.boxInfo.position);
@@ -700,10 +784,11 @@ namespace Duel.Editor
             colorGroupOpen = EditorGUILayout.Foldout(colorGroupOpen, "Colors");
             if (colorGroupOpen)
             {
-                HurtboxColor = EditorGUILayout.ColorField("Hurtbox Color", HurtboxColor);
-                HitboxColor = EditorGUILayout.ColorField("Hitbox Color", HitboxColor);
-                SuperArmorColor = EditorGUILayout.ColorField("Super Armor Color", SuperArmorColor);
-                SelectedBoxColor = EditorGUILayout.ColorField("Selected Box Color", SelectedBoxColor);
+                HurtboxColor = EditorGUILayout.ColorField("Hurtbox Color", (Color)HurtboxColor);
+                HitboxColor = EditorGUILayout.ColorField("Hitbox Color", (Color)HitboxColor);
+                SuperArmorColor = EditorGUILayout.ColorField("Super Armor Color", (Color)SuperArmorColor);
+                SelectedBoxColor = EditorGUILayout.ColorField("Selected Box Color", (Color)SelectedBoxColor);
+                HighlightedHandleColor = EditorGUILayout.ColorField("Hightlighted Handle Color", (Color)HighlightedHandleColor);
             }
         }
 
@@ -794,9 +879,11 @@ namespace Duel.Editor
             {
                 if ((PlayerAnimationEventType)Utilities.GetByte(item.intParameter, 0) == (int)PlayerAnimationEventType.AttackKeyFrame)
                 {
-                    attackInfo.frameData.Add(new FrameData());
+                    attackInfo.frameData.Add(new FrameData(item.time));
                 }
             }
+
+            SelectedAnimation.SortFrameData();
         }
 
         private void FillKeyFrames()
@@ -826,13 +913,14 @@ namespace Duel.Editor
                     int value = System.BitConverter.ToInt32(new byte[] { eventType, animationIndex, frameDataIndex, 0 }, 0);
                     newEvent.intParameter = value;
                     Debug.Log(closestSample);
-                    SelectedAnimation.frameData.Insert(frameDataIndex, new FrameData());
+                    SelectedAnimation.frameData.Insert(frameDataIndex, new FrameData(newEvent.time));
                     events.Add(newEvent);
                 }
                 time += 1 / fps;
             }
 
             AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, events.ToArray());
+            SelectedAnimation.SortFrameData();
 
             OnSampleTimeChange(SampleTime);
         }
@@ -840,17 +928,16 @@ namespace Duel.Editor
         private int GetFrameDataIndexAtTime(float time)
         {
             int indexOfLastKeyFrame = -1;
-            int indexCount = -1;
-            AnimationEvent lastFrameData = SelectedAnimation.clip.events.OrderBy(x => x.time).Where(@event =>
+
+            for (int i = SelectedAnimation.frameData.Count - 1; i >= 0; i--)
             {
-                indexCount++;
-                bool eventTimeIsBeforeSample = @event.time <= time;
-                bool animationEventTypeIsAttack = (PlayerAnimationEventType)Utilities.GetByte(@event.intParameter, 0) == PlayerAnimationEventType.AttackKeyFrame;
-                bool meetsCriteria = eventTimeIsBeforeSample && animationEventTypeIsAttack;
-                if (meetsCriteria)
-                    indexOfLastKeyFrame = indexCount;
-                return meetsCriteria;
-            }).LastOrDefault();
+                bool timeIsBeforeSample = SelectedAnimation.frameData[i].Time <= time;
+                if (timeIsBeforeSample)
+                {
+                    indexOfLastKeyFrame = i;
+                    break;
+                }
+            }
 
             return indexOfLastKeyFrame;
         }
@@ -915,8 +1002,6 @@ namespace Duel.Editor
 
         private void AddKeyframeAtSampleTime()
         {
-            FrameData newFrameData = new FrameData();
-            SelectedAnimation.frameData.Insert(Mathf.Max(0, FrameDataIndex), newFrameData);
             AnimationEvent newEvent = new AnimationEvent();
 
             float newTime = SampleTime * SelectedAnimation.clip.frameRate;
@@ -936,6 +1021,11 @@ namespace Duel.Editor
             currentAnimationEvents.AddRange(AnimationUtility.GetAnimationEvents(SelectedAnimation.clip));
             currentAnimationEvents.Add(newEvent);
 
+            FrameData newFrameData = new FrameData(newEvent.time);
+            SelectedAnimation.frameData.Add(newFrameData);
+
+            SelectedAnimation.SortFrameData();
+
             AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, currentAnimationEvents.OrderBy(s => s.time).ToArray());
             OnSampleTimeChange(SampleTime);
         }
@@ -946,6 +1036,8 @@ namespace Duel.Editor
             currentAnimationEvents.AddRange(AnimationUtility.GetAnimationEvents(SelectedAnimation.clip));
             currentAnimationEvents.RemoveAll(e => Mathf.Approximately(e.time, (int)(SampleTime * SelectedAnimation.clip.frameRate) / SelectedAnimation.clip.frameRate));
             SelectedAnimation.frameData.Remove(SelectedFrameData);
+            SelectedAnimation.SortFrameData();
+
             AnimationUtility.SetAnimationEvents(SelectedAnimation.clip, currentAnimationEvents.OrderBy(s => s.time).ToArray());
             OnSampleTimeChange(SampleTime);
         }

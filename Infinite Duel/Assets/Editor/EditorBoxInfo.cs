@@ -10,8 +10,6 @@ namespace Duel.Editor
     public class EditorBoxInfo
     {
         public BoxInfo boxInfo;
-        private Matrix4x4 localToWorldMatrix;
-        public Matrix4x4 worldToLocalMatrix;
         private Transform parent;
         public bool selected;
 
@@ -35,18 +33,20 @@ namespace Duel.Editor
             get => Quaternion.Euler(0, 0, boxInfo.rotation);
         }
 
+        public Matrix4x4 LocalToWorldMatrix
+        {
+            get => Matrix4x4.Translate(WorldPosition) * Matrix4x4.Rotate(Rotation);
+        }
+
+        public Matrix4x4 WorldToLocalMatrix
+        {
+            get => Matrix4x4.Inverse(LocalToWorldMatrix);
+        }
+
         public EditorBoxInfo(BoxInfo boxInfo, Transform parent)
         {
             this.boxInfo = boxInfo;
             this.parent = parent;
-
-            UpdateMatrices();
-        }
-
-        private void UpdateMatrices()
-        {
-            localToWorldMatrix = Matrix4x4.Translate(WorldPosition) * Matrix4x4.Rotate(Rotation);
-            worldToLocalMatrix = Matrix4x4.Inverse(localToWorldMatrix);
         }
 
         public void Draw()
@@ -54,11 +54,10 @@ namespace Duel.Editor
             positionControlID = GUIUtility.GetControlID(FocusType.Passive);
 
             Vector3[] hitboxVerts = new Vector3[4];
-
-            hitboxVerts[0] = localToWorldMatrix.MultiplyPoint3x4(new Vector3(-boxInfo.size.x, -boxInfo.size.y, 0) / 2f);
-            hitboxVerts[1] = localToWorldMatrix.MultiplyPoint3x4(new Vector3(boxInfo.size.x, -boxInfo.size.y, 0) / 2f);
-            hitboxVerts[2] = localToWorldMatrix.MultiplyPoint3x4(new Vector3(boxInfo.size.x, boxInfo.size.y, 0) / 2f);
-            hitboxVerts[3] = localToWorldMatrix.MultiplyPoint3x4(new Vector3(-boxInfo.size.x, boxInfo.size.y, 0) / 2f);
+            for (int i = 0; i < 4; i++)
+            {
+                hitboxVerts[i] = GetWorldCorner(i);
+            }
 
             Handles.DrawSolidRectangleWithOutline(hitboxVerts, GetColor(), GetColor());
         }
@@ -86,59 +85,21 @@ namespace Duel.Editor
 
         public void Move(Vector2 delta)
         {
-            boxInfo.position += (Vector2)parent.TransformVector(delta);
-            UpdateMatrices();
+            boxInfo.position += (Vector2)parent.InverseTransformVector(delta);
         }
 
-        public void Scale(Vector2 delta)
-        {
-            boxInfo.size += (Vector2)parent.TransformVector(worldToLocalMatrix.MultiplyPoint3x4(delta));
-            UpdateMatrices();
-        }
-
-        public void Scale(Vector2 delta, ref int cornerIndex)
+        public void PlaceCorner(Vector2 cornerWorldPos, int cornerIndex)
         {
             int opposingCornerIndex = (cornerIndex + 2) % 4;
 
-            Vector2 localDelta = worldToLocalMatrix.MultiplyVector(delta);
-
             Vector2 oldCornerPos = GetLocalCorner(cornerIndex);
-            Vector2 newCornerPos = oldCornerPos + localDelta;
+            Vector2 newCornerPos = WorldToLocalMatrix.MultiplyPoint(cornerWorldPos);
+
             Vector2 opposingCornerPos = GetLocalCorner(opposingCornerIndex);
 
             Vector2 newSize = new Vector2(newCornerPos.x - opposingCornerPos.x, newCornerPos.y - opposingCornerPos.y);
-
-            if ((oldCornerPos.x > opposingCornerPos.x && newCornerPos.x < opposingCornerPos.x) ||
-                (oldCornerPos.y > opposingCornerPos.y && newCornerPos.y < opposingCornerPos.y) ||
-                (oldCornerPos.x < opposingCornerPos.x && newCornerPos.x > opposingCornerPos.x) ||
-                (oldCornerPos.y < opposingCornerPos.y && newCornerPos.y > opposingCornerPos.y))
-            {
-                cornerIndex = opposingCornerIndex;
-                opposingCornerIndex = (cornerIndex + 2) % 4;
-                GUIUtility.hotControl = scaleControlIDs[cornerIndex];
-
-                return;
-            }
-
-            Vector2 newPosition = localToWorldMatrix.MultiplyPoint(new Vector2((newCornerPos.x + opposingCornerPos.x) / 2f, (newCornerPos.y + opposingCornerPos.y) / 2f));
-
             newSize = new Vector2(Mathf.Abs(newSize.x), Mathf.Abs(newSize.y));
-
-            boxInfo.size = newSize;
-            boxInfo.position = newPosition;
-            UpdateMatrices();
-        }
-
-        public void PlaceCorner(Vector2 cornerWorldPos, ref int cornerIndex)
-        {
-            int opposingCornerIndex = (cornerIndex + 2) % 4;
-
-            Vector2 oldCornerPos = GetLocalCorner(cornerIndex);
-            Vector2 newCornerPos = worldToLocalMatrix.MultiplyPoint(cornerWorldPos);
-            Vector2 opposingCornerPos = GetLocalCorner(opposingCornerIndex);
-
-            Vector2 newSize = new Vector2(newCornerPos.x - opposingCornerPos.x, newCornerPos.y - opposingCornerPos.y);
-            Vector2 newPosition = localToWorldMatrix.MultiplyPoint(new Vector2((newCornerPos.x + opposingCornerPos.x) / 2f, (newCornerPos.y + opposingCornerPos.y) / 2f));
+            Vector2 newPosition = LocalToWorldMatrix.MultiplyPoint3x4(new Vector2((newCornerPos.x + opposingCornerPos.x) / 2f, (newCornerPos.y + opposingCornerPos.y) / 2f));
 
             if ((oldCornerPos.x > opposingCornerPos.x && newCornerPos.x < opposingCornerPos.x) ||
                 (oldCornerPos.x < opposingCornerPos.x && newCornerPos.x > opposingCornerPos.x) ||
@@ -148,17 +109,14 @@ namespace Duel.Editor
                 return;
             }
 
-            newSize = new Vector2(Mathf.Abs(newSize.x), Mathf.Abs(newSize.y));
-
             boxInfo.size = newSize;
             boxInfo.position = newPosition;
-            UpdateMatrices();
         }
 
         public void Rotate(Vector2 startPoint, Vector2 endPoint)
         {
-            Vector2 dirToStart = worldToLocalMatrix.MultiplyPoint(startPoint).normalized;
-            Vector2 dirToEnd = worldToLocalMatrix.MultiplyPoint(endPoint).normalized;
+            Vector2 dirToStart = WorldToLocalMatrix.MultiplyPoint(startPoint).normalized;
+            Vector2 dirToEnd = WorldToLocalMatrix.MultiplyPoint(endPoint).normalized;
 
             float angleToStart = Mathf.Atan2(dirToStart.y, dirToStart.x); // In Radians
             float angleToEnd = Mathf.Atan2(dirToEnd.y, dirToEnd.x);// In Radians
@@ -167,12 +125,11 @@ namespace Duel.Editor
 
             float degreeDelta = angleDelta * Mathf.Rad2Deg;
             boxInfo.rotation += degreeDelta;
-            UpdateMatrices();
         }
 
         public bool ContainsPoint(Vector2 point)
         {
-            Vector3 adjustedPoint = worldToLocalMatrix.MultiplyPoint3x4(point);
+            Vector3 adjustedPoint = WorldToLocalMatrix.MultiplyPoint3x4(point);
             bool inBox = Mathf.Abs(adjustedPoint.x) <= Mathf.Abs(boxInfo.size.x / 2f) && Mathf.Abs(adjustedPoint.y) <= Mathf.Abs(boxInfo.size.y / 2f);
             return inBox;
         }
@@ -185,19 +142,19 @@ namespace Duel.Editor
             }
             else if (selected)
             {
-                return FrameDataTool.SelectedBoxColor;
+                return (Color)FrameDataTool.SelectedBoxColor;
             }
             else if (BoxType == BoxType.Hit)
             {
-                return FrameDataTool.HitboxColor;
+                return (Color)FrameDataTool.HitboxColor;
             }
             else if (BoxType == BoxType.Hurt)
             {
-                return FrameDataTool.HurtboxColor;
+                return (Color)FrameDataTool.HurtboxColor;
             }
             else
             {
-                return FrameDataTool.SuperArmorColor;
+                return (Color)FrameDataTool.SuperArmorColor;
             }
         }
 
@@ -238,7 +195,7 @@ namespace Duel.Editor
                         break;
                 }
 
-                Vector2 cornerWorldPosition = localToWorldMatrix.MultiplyPoint3x4(cornerLocalPosition);
+                Vector2 cornerWorldPosition = LocalToWorldMatrix.MultiplyPoint3x4(cornerLocalPosition);
                 Handles.color = GUIUtility.hotControl == scaleControlIDs[i] ? Color.yellow : Color.white;
                 Handles.DrawWireDisc(cornerWorldPosition, Vector3.forward, hypotenuse);
             }
@@ -269,6 +226,8 @@ namespace Duel.Editor
 
         public bool IsPointInVectorControl(Vector2 point)
         {
+            if (BoxType != BoxType.Hit)
+                return false;
             float hypotenuse = Mathf.Sqrt((boxInfo.size.x / 2f) * (boxInfo.size.x / 2f) + (boxInfo.size.y / 2f) * (boxInfo.size.y / 2f));
             Vector2 directionPoint = WorldPosition + ((HitboxInfo)boxInfo).knockbackDirection.normalized * hypotenuse;
 
@@ -282,7 +241,7 @@ namespace Duel.Editor
         public bool IsPointInScaleControl(Vector2 point)
         {
             float hypotenuse = Mathf.Sqrt((boxInfo.size.x / 2f) * (boxInfo.size.x / 2f) + (boxInfo.size.y / 2f) * (boxInfo.size.y / 2f)) / 20f;
-            Vector2 cornerWorldPosition = localToWorldMatrix.MultiplyPoint3x4(new Vector2(boxInfo.size.x, boxInfo.size.y));
+            Vector2 cornerWorldPosition = LocalToWorldMatrix.MultiplyPoint3x4(new Vector2(boxInfo.size.x, boxInfo.size.y));
 
             Vector2 absolutePoint = new Vector2(Mathf.Abs(point.x), Mathf.Abs(point.y));
 
@@ -293,7 +252,7 @@ namespace Duel.Editor
         {
             float hypotenuse = Mathf.Sqrt((boxInfo.size.x / 2f) * (boxInfo.size.x / 2f) + (boxInfo.size.y / 2f) * (boxInfo.size.y / 2f));
 
-            return worldToLocalMatrix.MultiplyPoint3x4(point).magnitude <= hypotenuse;
+            return WorldToLocalMatrix.MultiplyPoint3x4(point).magnitude <= hypotenuse;
         }
 
         /// <summary>
@@ -333,7 +292,7 @@ namespace Duel.Editor
 
         private Vector2 GetWorldCorner(int cornerIndex)
         {
-            return localToWorldMatrix.MultiplyPoint3x4(GetLocalCorner(cornerIndex));
+            return LocalToWorldMatrix.MultiplyPoint3x4(GetLocalCorner(cornerIndex));
         }
     }
 }
