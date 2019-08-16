@@ -25,7 +25,6 @@ namespace Duel
         public static byte GetByte(ref byte[] bytes, int index)
         {
             byte value = bytes[index];
-            Debug.Log(value);
             return value;
         }
 

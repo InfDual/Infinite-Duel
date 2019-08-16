@@ -73,10 +73,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 0.009124413
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 0.0178676248
     - Name: 
       Entry: 8
       Data: 
@@ -85,10 +85,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 1.31195652
+      Data: 0.779230833
     - Name: 
       Entry: 4
-      Data: 0.77
+      Data: 1.33413756
     - Name: 
       Entry: 8
       Data: 
@@ -134,7 +134,49 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 8|Duel.Combat.HurtboxInfo, Assembly-CSharp
+    - Name: position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.009124413
+    - Name: 
+      Entry: 4
+      Data: 0.0178676248
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.779230833
+    - Name: 
+      Entry: 4
+      Data: 1.33413756
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: rotation
+      Entry: 4
       Data: 0
+    - Name: hitstunMitigation
+      Entry: 4
+      Data: 0
+    - Name: damageMitigation
+      Entry: 4
+      Data: 0
+    - Name: superArmor
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -155,14 +197,56 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 8|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 9|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 9|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 10|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 11|Duel.Combat.HurtboxInfo, Assembly-CSharp
+    - Name: position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.009124413
+    - Name: 
+      Entry: 4
+      Data: 0.0178676248
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.779230833
+    - Name: 
+      Entry: 4
+      Data: 1.33413756
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: rotation
+      Entry: 4
       Data: 0
+    - Name: hitstunMitigation
+      Entry: 4
+      Data: 0
+    - Name: damageMitigation
+      Entry: 4
+      Data: 0
+    - Name: superArmor
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -183,14 +267,56 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 10|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 12|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 11|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 13|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 14|Duel.Combat.HurtboxInfo, Assembly-CSharp
+    - Name: position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.009124413
+    - Name: 
+      Entry: 4
+      Data: 0.0178676248
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.779230833
+    - Name: 
+      Entry: 4
+      Data: 1.33413756
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: rotation
+      Entry: 4
       Data: 0
+    - Name: hitstunMitigation
+      Entry: 4
+      Data: 0
+    - Name: damageMitigation
+      Entry: 4
+      Data: 0
+    - Name: superArmor
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -220,23 +346,23 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 12|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 15|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 1
     - Name: frameData
       Entry: 7
-      Data: 13|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 16|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 5
     - Name: 
       Entry: 7
-      Data: 14|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 17|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 15|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 18|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -261,10 +387,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 16|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 19|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 17|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 20|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -289,10 +415,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 18|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 21|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 19|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 22|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -317,10 +443,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 20|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 23|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 21|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 24|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -345,10 +471,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 22|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 25|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 23|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 26|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -382,13 +508,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 24|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 27|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 2
     - Name: frameData
       Entry: 7
-      Data: 25|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 28|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -404,13 +530,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 26|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 29|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 3
     - Name: frameData
       Entry: 7
-      Data: 27|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 30|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -426,13 +552,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 28|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 31|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 4
     - Name: frameData
       Entry: 7
-      Data: 29|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 32|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -448,69 +574,27 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 30|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 33|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 5
     - Name: frameData
       Entry: 7
-      Data: 31|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 34|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 3
     - Name: 
       Entry: 7
-      Data: 32|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 35|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 33|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 36|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 34|Duel.Combat.HurtboxInfo, Assembly-CSharp
-    - Name: position
-      Entry: 7
-      Data: UnityEngine.Vector2, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: -132.4439
-    - Name: 
-      Entry: 4
-      Data: -134.33931
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: size
-      Entry: 7
-      Data: UnityEngine.Vector2, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 297.841583
-    - Name: 
-      Entry: 4
-      Data: 284.057556
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: rotation
-      Entry: 4
       Data: 0
-    - Name: hitstunMitigation
-      Entry: 4
-      Data: 0
-    - Name: damageMitigation
-      Entry: 4
-      Data: 0
-    - Name: superArmor
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -522,35 +606,13 @@ MonoBehaviour:
       Data: 0
     - Name: hurtboxCount
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: time
       Entry: 4
       Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 35|Duel.Combat.AnimationInfo, Assembly-CSharp
-    - Name: clip
-      Entry: 10
-      Data: 6
-    - Name: frameData
-      Entry: 7
-      Data: 36|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 5
     - Name: 
       Entry: 7
       Data: 37|Duel.Combat.FrameData, Assembly-CSharp
@@ -560,6 +622,138 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 39|Duel.Combat.HitboxInfo, Assembly-CSharp
+    - Name: position
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.2373743
+    - Name: 
+      Entry: 4
+      Data: 0.366797864
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.467669964
+    - Name: 
+      Entry: 4
+      Data: 0.169721842
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: rotation
+      Entry: 4
+      Data: 0
+    - Name: damage
+      Entry: 4
+      Data: 5
+    - Name: hitStun
+      Entry: 4
+      Data: 1
+    - Name: knockbackDirection
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: knockbackForce
+      Entry: 4
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 1
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: time
+      Entry: 4
+      Data: 0.0833333358
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 40|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 41|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: hitboxCount
+      Entry: 3
+      Data: 0
+    - Name: hurtboxCount
+      Entry: 3
+      Data: 0
+    - Name: time
+      Entry: 4
+      Data: 0.166666672
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 42|Duel.Combat.AnimationInfo, Assembly-CSharp
+    - Name: clip
+      Entry: 10
+      Data: 6
+    - Name: frameData
+      Entry: 7
+      Data: 43|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 5
+    - Name: 
+      Entry: 7
+      Data: 44|Duel.Combat.FrameData, Assembly-CSharp
+    - Name: boxes
+      Entry: 7
+      Data: 45|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
       Data: 0
     - Name: 
       Entry: 13
@@ -581,10 +775,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 39|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 46|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 40|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 47|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -609,10 +803,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 41|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 48|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 42|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 49|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -637,10 +831,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 43|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 50|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 44|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 51|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -665,17 +859,17 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 45|Duel.Combat.FrameData, Assembly-CSharp
+      Data: 52|Duel.Combat.FrameData, Assembly-CSharp
     - Name: boxes
       Entry: 7
-      Data: 46|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
+      Data: 53|System.Collections.Generic.List`1[[Duel.Combat.BoxInfo, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 47|Duel.Combat.HitboxInfo, Assembly-CSharp
+      Data: 54|Duel.Combat.HitboxInfo, Assembly-CSharp
     - Name: position
       Entry: 7
       Data: UnityEngine.Vector2, UnityEngine.CoreModule
@@ -756,13 +950,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 48|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 55|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 6
     - Name: frameData
       Entry: 7
-      Data: 49|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 56|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -778,13 +972,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 50|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 57|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 7
     - Name: frameData
       Entry: 7
-      Data: 51|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 58|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -800,13 +994,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 52|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 59|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 8
     - Name: frameData
       Entry: 7
-      Data: 53|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 60|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -822,13 +1016,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 54|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 61|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 9
     - Name: frameData
       Entry: 7
-      Data: 55|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 62|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -844,13 +1038,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 56|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 63|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 10
     - Name: frameData
       Entry: 7
-      Data: 57|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 64|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -866,13 +1060,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 58|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 65|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 11
     - Name: frameData
       Entry: 7
-      Data: 59|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 66|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -888,13 +1082,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 60|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 67|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 12
     - Name: frameData
       Entry: 7
-      Data: 61|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 68|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -910,13 +1104,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 62|Duel.Combat.AnimationInfo, Assembly-CSharp
+      Data: 69|Duel.Combat.AnimationInfo, Assembly-CSharp
     - Name: clip
       Entry: 10
       Data: 13
     - Name: frameData
       Entry: 7
-      Data: 63|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
+      Data: 70|System.Collections.Generic.List`1[[Duel.Combat.FrameData, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
