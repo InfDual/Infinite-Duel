@@ -57,6 +57,12 @@ namespace Duel.Editor
                     if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HurtboxColor"), out hurtboxColor))
                     {
                         Debug.LogWarning("Failed to load HurtboxColor");
+                        
+                        Color newColor = Color.green;
+                        EditorPrefs.SetString("HurtboxColor", $"#{ColorUtility.ToHtmlStringRGBA(newColor)}");
+                        Debug.Log($"HurtboxColor set to {newColor}");
+
+                        hurtboxColor = (Color)newColor;
                     }
                 }
                 return hurtboxColor;
@@ -79,6 +85,13 @@ namespace Duel.Editor
                     if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HitboxColor"), out hitboxColor))
                     {
                         Debug.LogWarning("Failed to load HitboxColor");
+
+                         
+                        Color newColor = Color.red;
+                        EditorPrefs.SetString("HitboxColor", $"#{ColorUtility.ToHtmlStringRGBA(newColor)}");
+                        Debug.Log($"HitboxColor set to {newColor}");
+                        hitboxColor = (Color)newColor;
+
                     }
                 }
                 return hitboxColor;
@@ -100,6 +113,11 @@ namespace Duel.Editor
                     if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("SelectedBoxColor"), out selectedBoxColor))
                     {
                         Debug.LogWarning("Failed to load SelectedBoxColor");
+                  
+                        Color newColor = Color.yellow;
+                        EditorPrefs.SetString("SelectedBoxColor", $"#{ColorUtility.ToHtmlStringRGBA(newColor)}");
+                        Debug.Log($"SelectedBoxColor set to {newColor}");
+                        selectedBoxColor = (Color)newColor;
                     }
                 }
                 return selectedBoxColor;
@@ -121,6 +139,11 @@ namespace Duel.Editor
                     if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("SuperArmorColor"), out superArmorColor))
                     {
                         Debug.LogWarning("Failed to load SuperArmorColor");
+                    
+                        Color newColor = Color.cyan;
+                        EditorPrefs.SetString("SuperArmorColor", $"#{ColorUtility.ToHtmlStringRGBA(newColor)}");
+                        Debug.Log($"SuperArmorColor set to {newColor}");
+                        superArmorColor = (Color)newColor;
                     }
                 }
                 return superArmorColor;
@@ -142,6 +165,13 @@ namespace Duel.Editor
                     if (!Utilities.TryParseHtmlStringToNullableColor(EditorPrefs.GetString("HighlightedHandleColor"), out highlightedHandleColor))
                     {
                         Debug.LogWarning("Failed to load HighlightedHandleColor");
+                   
+                        
+                        Color newColor = Color.yellow;
+                        EditorPrefs.SetString("HighlightedHandleColor", $"#{ColorUtility.ToHtmlStringRGBA(newColor)}");
+                        Debug.Log($"HighlightedHandleColor set to {newColor}");
+
+                        highlightedHandleColor = (Color)newColor;
                     }
                 }
                 return highlightedHandleColor;

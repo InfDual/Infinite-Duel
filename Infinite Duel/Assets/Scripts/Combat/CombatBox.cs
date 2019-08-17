@@ -20,6 +20,10 @@ namespace Duel.Combat
 
         public void Activate(BoxInfo box)
         {
+            if(trans == null)  trans = transform;
+            if(coll == null)  coll =  GetComponent<BoxCollider2D>();
+
+
             activeBox = box;
             coll.enabled = true;
             gameObject.layer = box.Type == 0 ? Layers.hitbox : Layers.hurtbox;
@@ -31,7 +35,9 @@ namespace Duel.Combat
         }
 
         public void Deactivate()
-        {
+        {   
+            if(trans == null)  trans = transform;
+            if(coll == null)  coll =  GetComponent<BoxCollider2D>();
             gameObject.name = "Disabled";
             coll.enabled = false;
         }
